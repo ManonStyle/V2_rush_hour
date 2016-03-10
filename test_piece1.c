@@ -4,6 +4,8 @@
 #include "piece.h"
 
 #define NB_PIECES 4
+#define WIDTH 8
+#define HEIGHT 10
 
 /**
  * @brief test if value is equal to expected; if not, displays an error message containing msg to standard error output 
@@ -44,7 +46,9 @@ void tear_down() {
     delete_piece(pieces[i]);
 }
 
-bool test_new_piece() {
+/////////////////// VERSION 1 /////////////////////////////
+
+bool test_new_piece_rh() {
   bool result = true;
   for (int x= 0 ; x < 5; x++)
     for (int y= 0 ; y < 5; y++)
@@ -56,15 +60,15 @@ bool test_new_piece() {
           else
             size = 3;
           piece p = new_piece_rh(x, y, small, horizontal);
-          result = result && test_equality_int(x, get_x(p),"get_x");
-          result = result && test_equality_int(y, get_y(p),"get_y");
+          result = result && test_equality_int(x, get_x(p),"test_new_piece_rh get_x");
+          result = result && test_equality_int(y, get_y(p),"test_new_piece_rh get_y");
           if (horizontal) {
-            result = result && test_equality_int(1, get_height(p), "get_height");
-            result = result && test_equality_int(size, get_width(p), "get_width");
+            result = result && test_equality_int(1, get_height(p), "test_new_piece_rh get_height");
+            result = result && test_equality_int(size, get_width(p), "test_new_piece_rh get_width");
           }
           else {
-            result = result && test_equality_int(size, get_height(p), "get_height");
-            result = result && test_equality_int(1, get_width(p), "get_width");
+            result = result && test_equality_int(size, get_height(p), "test_new_piece_rh get_height");
+            result = result && test_equality_int(1, get_width(p), "test_new_piece_rh get_width");
           }
           delete_piece(p);
         }
@@ -146,14 +150,43 @@ bool test_copy() {
   return result;
 }
 
+/////////////////// VERSION 2 /////////////////////////////
+
+bool test_new_piece(){
+  bool result = true;
+  for (int x= 0 ; x < WIDTH; x++)
+    for (int y= 0 ; y < HEIGHT; y++)
+      for (bool move_x=false; !move_x ; move_x= !move_x)
+        for (bool move_y=false; !move_y ; move_y= !move_y) {
+          int width = WIDTH - x;
+	  int height = HEIGHT - y;
+          piece p = new_piece(x, y, width, height, move_x, move_y);
+          result = result && test_equality_int(x, get_x(p),"test_new_piece get_x");
+          result = result && test_equality_int(y, get_y(p),"test_new_piece get_y");
+	  result = result && test_equality_int(width, get_width(p), "test_new_piece get_width");
+	  result = result && test_equality_int(height, get_height(p), "test_new_piece get_height");
+	  result = result && test_equality_int(move_x, can_move_x(p), "test_new_piece can_move_x");
+	  result = result && test_equality_int(move_y, can_move_y(p), "test_new_piece can_move_y");
+          delete_piece(p);
+        }
+  return result;
+}
+
+
 int main (int argc, char *argv[])
 {
   bool result= true;
 
-  result = result && test_equality_bool(true, test_new_piece(), "new_piece");
+  /////////////////// VERSION 1 /////////////////////////////
+
+  result = result && test_equality_bool(true, test_new_piece_rh(), "new_piece_rh");
   result = result && test_equality_bool(true, test_intersect(), "intersect");
   result = result && test_equality_bool(true, test_move(), "move");
   result = result && test_equality_bool(true, test_copy(), "copy");
+
+  /////////////////// VERSION 2 /////////////////////////////
+
+  result = result && test_equality_bool(true, test_new_piece(), "test_new_piece");
 
   if (result)
     return EXIT_SUCCESS;
