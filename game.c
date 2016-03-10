@@ -5,7 +5,10 @@
 #define SIZE_ARRAY 6
 
 
+
 struct game_s{
+  int width;
+  int height;
   int nb_pieces;
   int nb_moves;
   piece *pieces;
@@ -13,6 +16,8 @@ struct game_s{
 
 game new_game_hr (int nb_pieces, piece *pieces){
   game g = (game)malloc(sizeof(struct game_s));
+  g->width = 6;
+  g->height = 6;
   g->nb_pieces = nb_pieces;
   g->nb_moves = 0;
   g->pieces = (piece*)malloc(nb_pieces*sizeof(piece));
@@ -31,6 +36,9 @@ void delete_game (game g){
 }
 
 void copy_game (cgame src, game dst){
+  dst->width = src->width;
+  dst->height = src->height;
+  dst->nb_pieces = src->nb_pieces;
   dst->nb_moves = src->nb_moves;
   for(int i=0; i<src->nb_pieces; ++i){
     if(dst->pieces[i] == NULL)
@@ -53,14 +61,17 @@ cpiece game_piece(cgame g, int piece_num){
 
 
 bool game_over_hr (cgame g){
+  //a adapter pour toute les tailles de pieces 
   return get_x(g->pieces[0]) == 4 && get_y(g->pieces[0]) == 3;
 }
 
+// pas dans .h
 bool is_in_game(cgame g, int piece_num){
   cpiece p = g->pieces[piece_num];
   return get_x(p)>=0 && get_x(p)<=SIZE_ARRAY-get_width(p) && get_y(p)>=0 && get_y(p)<=SIZE_ARRAY-get_height(p);
 }
 
+// pas dans .h
 bool is_above_piece(cgame g, int piece_num){
   cpiece p = g->pieces[piece_num];
   for(int i=0; i<piece_num; ++i){
@@ -73,6 +84,7 @@ bool is_above_piece(cgame g, int piece_num){
   }
   return false;
 }
+
 
 bool play_move(game g, int piece_num, dir d, int distance){
   piece p = g->pieces[piece_num];
@@ -104,5 +116,39 @@ bool play_move(game g, int piece_num, dir d, int distance){
 
 int game_nb_moves(cgame g){
   return g->nb_moves;
+}
+
+// V2
+
+game new_game (int width, int height, int nb_pieces, piece *pieces){
+  game g = (game)malloc(sizeof(struct game_s));
+  g->width = width;
+  g->height = height;
+  g->nb_pieces = nb_pieces;
+  g->nb_moves = 0;
+  g->pieces = (piece*)malloc(nb_pieces*sizeof(piece));
+  for(int i=0; i<nb_pieces; ++i){
+    g->pieces[i] = new_piece_rh(0, 0, true, true);
+    copy_piece(pieces[i], g->pieces[i]);
+  }
+  return g;
+}
+
+int game_width(cgame g){
+  return g->width;
+}
+
+int game_height(cgame g){
+  return g->height;
+}
+
+/**
+ * @brief return the number of then piece located on this square (-1 if no piece is present)
+ * @param game
+ * @param x-coor of the square
+ * @param y-coor of the square
+ */
+int game_square_piece (game g, int x, int y){
+  
 }
 
