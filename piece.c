@@ -61,11 +61,13 @@ piece new_piece_rh (int x, int y, bool small, bool horizontal){
   p->small = small;
   p->horizontal = horizontal;
   //si p n'est pas horizontal
+   p->height=1;
    if (p->horizontal==false&&p->small==false)
      p->height=3;       
    else
      p->height=2;
    //si p est horizontal
+    p->width=1;
    if (p->horizontal==true&&p->small==true)
      p->width=2;       
    else
