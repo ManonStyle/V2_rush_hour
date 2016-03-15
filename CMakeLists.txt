@@ -17,6 +17,6 @@ include_directories(
 enable_testing()
 
 add_subdirectory(game)
-add_subdirectory(rush_hour)
+add_subdirectory(jeu)
 
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})

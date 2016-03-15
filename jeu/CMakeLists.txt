@@ -8,4 +8,5 @@ target_link_libraries(jeu game)
 
 install(TARGETS jeu RUNTIME DESTINATION ${JEU_BINARY_DIR}/bin)
 
-install(FILES rush_hour DESTINATION ${JEU_BINARY_DIR}/bin)
+install(FILES game_rh.txt DESTINATION ${JEU_BINARY_DIR}/bin)
+install(FILES game_rh.txt DESTINATION ${JEU_BINARY_DIR}/jeu)
