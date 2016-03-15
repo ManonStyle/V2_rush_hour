@@ -60,7 +60,6 @@ cpiece game_piece(cgame g, int piece_num){
 
 
 bool game_over_hr (cgame g){
-  //a adapter pour toute les tailles de pieces 
   return get_x(g->pieces[0]) == 4 && get_y(g->pieces[0]) == 3;
 }
 
@@ -148,6 +147,16 @@ int game_height(cgame g){
  * @param y-coor of the square
  */
 int game_square_piece (game g, int x, int y){
-  
+  int px=0, py=0, pw=0, ph=0;
+  for (int num_p=0; num_p<g->nb_pieces; ++num_p) {
+    px = get_x(num_p);
+    py = get_y(num_p);
+    pw = get_width(num_p);
+    ph = get_height(num_p);
+    for (int w=0; w<ph; ++w)
+      for (int h=0; h<pw; ++h)
+	if ( x==px+w && y==py+h )
+	  return num_p;
+    return -1;
 }
 
