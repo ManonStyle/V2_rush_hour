@@ -13,7 +13,7 @@ struct dir_option_s{
   dir option;
 };
 
-typedef struct dir_option_s* dir_option;
+typedef struct dir_option_s dir_option;
 dir_option direction[] = {{"up",UP},{"down",DOWN},{"right",RIGHT},{"left",LEFT}};
 
 
@@ -22,7 +22,7 @@ struct game_option_s{
   char file[30];
 };
 
-typedef struct game_option_s* game_option;
+typedef struct game_option_s game_option;
 game_option game_chose[] = {{"-rh", "game_rh.txt"},{"-ar", "game_ar.txt"}};
 
 
@@ -65,24 +65,29 @@ void print_line(game g, int y){
 
 
 void print_line_end(game g, int y){
-  for(int x=0; x<game_width(g); ++x){
-    int piece_num = game_square_piece (g, x, y-1);
-    if(piece_num != -1)
-      printf("-------");
+  int piece_num = game_square_piece (g, 0, y);  
+  if(piece_num != -1){
+    if(game_square_piece (g, 0, y-1) == piece_num)
+      printf("|      ");
     else
       printf("-      ");
   }
-  cpiece p = game_piece(g, game_nb_pieces(g));
-  if(y >= get_y(p) && y < get_y(p)+get_height(p)){
-    if(y == get_y(p) && y == get_y(p)+get_height(p)-1)
-      printf("|\n");
-    else
-      printf("\n");
-  }
   else
-    printf("|\n");
+    printf("|------");
+  for(int x=1; x<game_width(g); ++x){
+    piece_num = game_square_piece (g, x, y-1);
+    if(piece_num != -1){
+      if(game_square_piece (g, 0, y-1) == piece_num)
+	printf("-------");
+      else
+	printf("-      ");
+    }
+    else
+      printf("-      ");
+  }
+  printf("|\n");
 }
-      
+
 
 
 // Print the board of the current game in the terminal
@@ -113,18 +118,17 @@ game init_game(int level, char* file){
       exit(EXIT_FAILURE);
     }
   }
-  const char limit[1] = ".";
+  const char limit[2] = ".";
   char* splited = strtok(tmp, limit);
-  int width = atoi(splited);
+  int g_width = atoi(splited);
   splited = strtok(NULL, limit);
-  int height = atoi(splited);
+  int g_height = atoi(splited);
   splited = strtok(NULL, limit);
   int nb_pieces = atoi(splited);
-  piece pieces[nb_pieces];
+  piece pieces[nb_pieces+1];
   char value[1];
   for(int i=0; i<=nb_pieces; ++i){
     splited = strtok(NULL, limit);
-    printf("%s\n", splited);
     value[0] = splited[0];
     int x = atoi(value);
     value[0] = splited[1];
@@ -140,7 +144,7 @@ game init_game(int level, char* file){
     pieces[i] = new_piece(x, y, width, height, move_x, move_y);
   }
   fclose(f);
-  return new_game(width, height, nb_pieces, pieces);
+  return new_game(g_width, g_height, nb_pieces, pieces);
 }
 
 
@@ -256,7 +260,7 @@ bool is_good_direction(game g, int piece_num, dir d){
 int is_dir_option(char* str){
   //Verify if the string str is an option's name of direction.
   for(int i=0; i<4; ++i){
-    if(strcmp(str, direction[i]->name) == 10)
+    if(strcmp(str, direction[i].name) == 10)
       return i;
   }
   return -1;
@@ -279,7 +283,7 @@ int take_direction(game g, int piece_num, char* buf, dir* d){
     if(option_num == -1)
       printf("Write one of those direction: up, down, right, left\tor write cancel or exit.\n");
     else{
-      *(d) = direction[option_num]->option;
+      *(d) = direction[option_num].option;
       if(is_good_direction(g, piece_num, *(d)))
 	return 1;
     }
@@ -326,6 +330,15 @@ void usage(char* str){
 }
 
 
+void test_init_game(game g){
+  for(int y= game_height(g)-1; y>=0; --y){
+    for(int x= 0; x<game_width(g); ++x)
+      printf("(%d, %d): %d\t", x, y, game_square_piece(g, x, y));
+    printf("\n");
+  }
+}
+
+
 
 int main(int argc, char* argv[]){
   if(argc != 3)
@@ -333,17 +346,18 @@ int main(int argc, char* argv[]){
   char file[30];
   file[0] = '\0';
   for(int i=0; i<2; ++i){
-    if(strcmp(argv[1], game_chose[i]->name) == 10){
-      strcpy(file, game_chose[i]->file);
+    if(strcmp(argv[1], game_chose[i].name) == 0){
+      strcpy(file, game_chose[i].file);
       break;
     }
   }
   if(strlen(file) == 0)
     usage(argv[0]);
-  int level = atoi(argv[1]);
+  int level = atoi(argv[2]);
   if(level <= 0)
     usage(argv[0]);
   game g = init_game(level, file);
+  test_init_game(g);
   char buf[3][100];
   int piece_num;
   dir d;
