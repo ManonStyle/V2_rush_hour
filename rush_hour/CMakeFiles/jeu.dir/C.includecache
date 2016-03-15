@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gg/Bureau/projet/v2_rush_hour/rush_hour/main.c
+stdlib.h
+-
+stdio.h
+-
+string.h
+-
+unistd.h
+-
+game.h
+/home/gg/Bureau/projet/v2_rush_hour/rush_hour/game.h
+piece.h
+/home/gg/Bureau/projet/v2_rush_hour/rush_hour/piece.h
+

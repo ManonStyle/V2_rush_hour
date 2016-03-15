@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gg/Bureau/projet/v2_rush_hour/game/piece/piece.c
+stdbool.h
+-
+stdio.h
+-
+stdlib.h
+-
+piece.h
+/home/gg/Bureau/projet/v2_rush_hour/game/piece/piece.h
+
+/home/gg/Bureau/projet/v2_rush_hour/game/piece/piece.h
+stdbool.h
+-
+
+/home/gg/Bureau/projet/v2_rush_hour/game/piece/test_piece1.c
+stdlib.h
+-
+time.h
+-
+stdio.h
+-
+piece.h
+/home/gg/Bureau/projet/v2_rush_hour/game/piece/piece.h
+
