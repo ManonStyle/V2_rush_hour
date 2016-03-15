@@ -137,7 +137,6 @@ int game_height(cgame g){
   return g->height;
 }
 
-
 int game_square_piece (game g, int x, int y){
   int px, py, pw, ph;
   for (int piece_num= 0; piece_num<g->nb_pieces; ++piece_num) {
