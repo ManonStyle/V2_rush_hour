@@ -1,12 +1,11 @@
 
-# cmake de rush_hour
+# cmake de main
 
 
-add_executable(rush_hour rush_hour.c)
+add_executable(jeu main.c)
 
-target_link_libraries(rush_hour game)
+target_link_libraries(jeu game)
 
-install(TARGETS rush_hour RUNTIME DESTINATION ${RUSHHOUR_BINARY_DIR}/bin)
+install(TARGETS jeu RUNTIME DESTINATION ${JEU_BINARY_DIR}/bin)
 
-
-
+install(FILES game_rh.txt DESTINATION ${JEU_BINARY_DIR}/bin)

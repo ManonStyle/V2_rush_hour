@@ -2,17 +2,17 @@
 # cmake principal
 
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.2)
 
-project(RUSHHOUR)
+project(JEU)
 
 add_definitions(-std=c99 -g -Wall)
 
 set(CMAKE_INSTALL_PREFIX .)
 
 include_directories(
-	$(RUSHHOUR_SOURCE_DIR)/game/game
-	$(RUSHHOUR_SOURCE_DIR)/game/piece)
+	$(JEU_SOURCE_DIR)/game/game
+	$(JEU_SOURCE_DIR)/game/piece)
 
 enable_testing()
 
