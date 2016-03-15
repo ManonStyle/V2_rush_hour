@@ -74,7 +74,7 @@ bool intersect(cpiece p1, cpiece p2){
   int x1 = get_x(p1);
   int x2 = get_x(p2);
   int y1 = get_y(p1);
-  int y2 = get_y(p1);
+  int y2 = get_y(p2);
   bool intersect_x = false;
   bool intersect_y = false;
   for(int i=0; i<get_width(p1); ++i){
