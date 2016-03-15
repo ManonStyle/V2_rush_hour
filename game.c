@@ -4,7 +4,6 @@
 
 
 
-
 struct game_s{
   int width;
   int height;
@@ -13,6 +12,7 @@ struct game_s{
   piece *pieces;
 };
 
+
 game new_game_hr (int nb_pieces, piece *pieces){
   game g = (game)malloc(sizeof(struct game_s));
   g->width = 6;
@@ -20,6 +20,10 @@ game new_game_hr (int nb_pieces, piece *pieces){
   g->nb_pieces = nb_pieces;
   g->nb_moves = 0;
   g->pieces = (piece*)malloc(nb_pieces*sizeof(piece));
+  if (g == NULL){
+    fprintf(stderr, "Allocation problem");
+    exit(EXIT_FAILURE);
+  }
   for(int i=0; i<nb_pieces; ++i){
     g->pieces[i] = new_piece_rh(0, 0, true, true);
     copy_piece(pieces[i], g->pieces[i]);
@@ -60,63 +64,52 @@ cpiece game_piece(cgame g, int piece_num){
 
 
 bool game_over_hr (cgame g){
-  return get_x(g->pieces[0]) == 4 && get_y(g->pieces[0]) == 3;
-}
-
-// pas dans .h
-bool is_in_game(cgame g, int piece_num){
-  cpiece p = g->pieces[piece_num];
-  return get_x(p)>=0 && get_x(p)<=SIZE_ARRAY-get_width(p) && get_y(p)>=0 && get_y(p)<=SIZE_ARRAY-get_height(p);
-}
-
-// pas dans .h
-bool is_above_piece(cgame g, int piece_num){
-  cpiece p = g->pieces[piece_num];
-  for(int i=0; i<piece_num; ++i){
-    if(intersect(p,g->pieces[i]))
-      return true;
-  }
-  for(int i=piece_num+1; i<g->nb_pieces; ++i){
-    if(intersect(p,g->pieces[i]))
-      return true;
-  }
-  return false;
+  return get_x(g->pieces[0]) == get_x(g->pieces[g->nb_pieces]) && get_y(g->pieces[0]) == get_y(g->pieces[g->nb_pieces]);
 }
 
 
 bool play_move(game g, int piece_num, dir d, int distance){
   piece p = g->pieces[piece_num];
-  if(is_horizontal(p)){
+  if(!can_move_y(p)){
     if(d == UP || d == DOWN)
       return false;
-  }else{
+  }
+  if(!can_move_x(p)){
     if(d == RIGHT || d == LEFT)
       return false;
   }
-  int cover_distance;
-  for(cover_distance = 1; cover_distance<=distance; ++cover_distance){
-    move_piece(p, d, 1);
-    if(!is_in_game(g, piece_num) || is_above_piece(g, piece_num)){      //If wrong movement, the piece go back to the initial coordinates
-      if(d == RIGHT)
-	move_piece(p, LEFT, cover_distance);
-      else if(d == LEFT)
-	move_piece(p, RIGHT, cover_distance);
-      else if(d == UP)
-	move_piece(p, DOWN, cover_distance);
-      else
-	move_piece(p, UP, cover_distance);
-      return false;
+  if(d == RIGHT){
+    for(int i=0; i<distance; ++i){
+      if(game_square_piece(g, get_x(p)+get_width(p)+i, get_y(p) != -1))
+	return false;
     }
   }
-  g->nb_moves += distance;
+  if(d == LEFT){
+    for(int i=0; i<distance; ++i){
+      if(game_square_piece(g, get_x(p)-1+i, get_y(p) != -1))
+	return false;
+    }
+  }
+  if(d == UP){
+    for(int i=0; i<distance; ++i){
+      if(game_square_piece(g, get_x(p), get_y(p)+get_height(p) != -1))
+	return false;
+    }
+  }
+  if(d == DOWN){
+    for(int i=0; i<distance; ++i){
+      if(game_square_piece(g, get_x(p), get_y(p)-1+i != -1))
+	return false;
+    }
+  }
   return true;
 }
+
 
 int game_nb_moves(cgame g){
   return g->nb_moves;
 }
 
-// V2
 
 game new_game (int width, int height, int nb_pieces, piece *pieces){
   game g = (game)malloc(sizeof(struct game_s));
@@ -125,6 +118,10 @@ game new_game (int width, int height, int nb_pieces, piece *pieces){
   g->nb_pieces = nb_pieces;
   g->nb_moves = 0;
   g->pieces = (piece*)malloc(nb_pieces*sizeof(piece));
+  if (g == NULL){
+    fprintf(stderr, "Allocation problem");
+    exit(EXIT_FAILURE);
+  }
   for(int i=0; i<nb_pieces; ++i){
     g->pieces[i] = new_piece_rh(0, 0, true, true);
     copy_piece(pieces[i], g->pieces[i]);
@@ -140,23 +137,18 @@ int game_height(cgame g){
   return g->height;
 }
 
-q/**
- * @brief return the number of then piece located on this square (-1 if no piece is present)
- * @param game
- * @param x-coor of the square
- * @param y-coor of the square
- */
 int game_square_piece (game g, int x, int y){
-  int px=0, py=0, pw=0, ph=0;
-  for (int num_p=0; num_p<g->nb_pieces; ++num_p) {
-    px = get_x(num_p);
-    py = get_y(num_p);
-    pw = get_width(num_p);
-    ph = get_height(num_p);
+  int px, py, pw, ph;
+  for (int piece_num=0; piece_num<g->nb_pieces; ++piece_num) {
+    px = get_x(g->pieces[piece_num]);
+    py = get_y(g->pieces[piece_num]);
+    pw = get_width(g->pieces[piece_num]);
+    ph = get_height(g->pieces[piece_num]);
     for (int w=0; w<ph; ++w)
       for (int h=0; h<pw; ++h)
 	if ( x==px+w && y==py+h )
-	  return num_p;
-    return -1;
+	  return piece_num;
+  }
+  return -1;
 }
 
