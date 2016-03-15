@@ -13,11 +13,8 @@ struct dir_option_s{
   dir option;
 };
 
-typedef struct game_option_s* dir_option;
-const dir_option direction[] = {{"up",UP},{"down",DOWN},{"right",RIGHT},{"left",LEFT}};
-
-
-typedef bool (f_game)(int);
+typedef struct dir_option_s* dir_option;
+dir_option direction[] = {{"up",UP},{"down",DOWN},{"right",RIGHT},{"left",LEFT}};
 
 
 struct game_option_s{
@@ -26,12 +23,12 @@ struct game_option_s{
 };
 
 typedef struct game_option_s* game_option;
-const game_option game_chose[] = {{"-rh", "game_rh.txt"},{"-ar", "game_ar.txt"}};
+game_option game_chose[] = {{"-rh", "game_rh.txt"},{"-ar", "game_ar.txt"}};
 
 
 
 void print_line_empty(game g, int y){
-  for(int x=0; x<game_whidth(g); ++x)
+  for(int x=0; x<game_width(g); ++x)
     printf("|      ");
   cpiece p = game_piece(g, game_nb_pieces(g));
   if(y >= get_y(p) && y < get_y(p) +get_height(p)){
@@ -47,7 +44,7 @@ void print_line_empty(game g, int y){
 
 
 void print_line(game g, int y){
-  for(int x=0; x<game_whidth(g); ++x){
+  for(int x=0; x<game_width(g); ++x){
     int piece_num = game_square_piece (g, x, y);
     if(piece_num != -1)
       printf("|  %2d  ", piece_num);
@@ -68,7 +65,7 @@ void print_line(game g, int y){
 
 
 void print_line_end(game g, int y){
-  for(int x=0; x<game_whidth(g); ++x){
+  for(int x=0; x<game_width(g); ++x){
     int piece_num = game_square_piece (g, x, y-1);
     if(piece_num != -1)
       printf("-------");
@@ -233,7 +230,7 @@ bool is_good_direction(game g, int piece_num, dir d){
   if(d == UP){
     if(!can_move_y(p))
       return not_good_direction(piece_num, "up");
-    if(y+get_height(p) >= game_height(p))
+    if(y+get_height(p) >= game_height(g))
       return not_good_direction(piece_num, "up");
     for(int i=0; i<get_width(p); ++i){    
       if(game_square_piece(g, x+i, y+get_height(p)) != -1){
@@ -259,7 +256,7 @@ bool is_good_direction(game g, int piece_num, dir d){
 int is_dir_option(char* str){
   //Verify if the string str is an option's name of direction.
   for(int i=0; i<4; ++i){
-    if(strcmp(str, direction[i]->dir_name) == 10)
+    if(strcmp(str, direction[i]->name) == 10)
       return i;
   }
   return -1;
@@ -278,12 +275,12 @@ int take_direction(game g, int piece_num, char* buf, dir* d){
       return -1;
     if(strcmp(buf, "restart") == 10)
       return -2;
-    int option_num = is_dir_option(buf)
+    int option_num = is_dir_option(buf);
     if(option_num == -1)
       printf("Write one of those direction: up, down, right, left\tor write cancel or exit.\n");
     else{
-      *(d) = direction[i]->dir_option;
-      if(is_good_direction_rh(g, piece_num, *(d)))
+      *(d) = direction[option_num]->option;
+      if(is_good_direction(g, piece_num, *(d)))
 	return 1;
     }
   }
@@ -302,11 +299,13 @@ int take_number_case(game g, int piece_num, dir d, char* buf, int* distance){
       return -1;
     if(strcmp(buf, "restart") == 10)
       return -2;
-    if(buf[0]<48 || buf[0]>=48+SIZE_ARRAY || buf[1] != 10){
-      if(d == RIGHT || d == LEFT)
-	printf("Write a number between 0 and %d\tor write cancel or exit.\n",game_width(p));
-      if(d == UP || d == DOWN)
-	printf("Write a number between 0 and %d\tor write cancel or exit.\n",game_height(p));
+    if(d == RIGHT || d == LEFT){
+      if(buf[0]<48 || buf[0]>=48+game_width(g) || buf[1] != 10)
+	printf("Write a number between 0 and %d\tor write cancel or exit.\n",game_width(g));
+      }
+    if(d == UP || d == DOWN){
+      if(buf[0]<48 || buf[0]>=48+game_height(g) || buf[1] != 10)
+	printf("Write a number between 0 and %d\tor write cancel or exit.\n",game_height(g));
     }
     else{
       *(distance) = atoi(buf);
@@ -350,7 +349,6 @@ int main(int argc, char* argv[]){
   dir d;
   int distance;
   int back_code;
-  cpiece init_p = game_piece(g, 0);
   while(!game_over_hr(g)){
     bool good = false;
     while(!good){
