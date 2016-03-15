@@ -61,12 +61,12 @@ void copy_piece (cpiece src, piece dst){
 void move_piece (piece p, dir d, int distance){
     if(d == RIGHT)
       p->x += distance;
-    if(d == LEFT)
+    else if(d == LEFT)
       p->x -= distance;
-    if(d == UP)
-      p->x -= distance;
-    if(d == DOWN)
-      p->x -= distance;
+    else if(d == UP)
+      p->y += distance;
+    else
+      p->y -= distance;
 }
 
 

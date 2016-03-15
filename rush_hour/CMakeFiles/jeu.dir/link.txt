@@ -1,1 +1,0 @@
-/usr/bin/cc     CMakeFiles/jeu.dir/main.c.o  -o jeu -rdynamic ../game/libgame.a 
