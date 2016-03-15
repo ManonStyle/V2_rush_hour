@@ -28,8 +28,17 @@ game_option game_chose[] = {{"-rh", "game_rh.txt"},{"-ar", "game_ar.txt"}};
 
 
 void print_line_empty(game g, int y){
-  for(int x=0; x<game_width(g); ++x)
-    printf("|      ");
+  for(int x=0; x<game_width(g); ++x){
+    int piece_num = game_square_piece (g, x, y);
+    if(piece_num != -1){
+      if(game_square_piece (g, x-1, y) == piece_num)
+	printf("       ");
+      else
+	printf("|      ");
+    }
+    else
+      printf("|      ");
+  }
   cpiece p = game_piece(g, game_nb_pieces(g));
   if(y >= get_y(p) && y < get_y(p) +get_height(p)){
     if(y == get_y(p) && y == get_y(p)+get_height(p)-1)
@@ -46,8 +55,12 @@ void print_line_empty(game g, int y){
 void print_line(game g, int y){
   for(int x=0; x<game_width(g); ++x){
     int piece_num = game_square_piece (g, x, y);
-    if(piece_num != -1)
-      printf("|  %2d  ", piece_num);
+    if(piece_num != -1){
+      if(game_square_piece (g, x-1, y) == piece_num)
+	printf("   %2d  ", piece_num);
+      else
+	printf("|  %2d  ", piece_num);
+    }
     else
       printf("|      ");
   }
@@ -70,20 +83,20 @@ void print_line_end(game g, int y){
     if(game_square_piece (g, 0, y-1) == piece_num)
       printf("|      ");
     else
-      printf("-      ");
+      printf("|------");
   }
   else
     printf("|------");
   for(int x=1; x<game_width(g); ++x){
-    piece_num = game_square_piece (g, x, y-1);
+    piece_num = game_square_piece (g, x, y);
     if(piece_num != -1){
-      if(game_square_piece (g, 0, y-1) == piece_num)
-	printf("-------");
-      else
+      if(game_square_piece (g, x, y-1) == piece_num)
 	printf("-      ");
+      else
+	printf("-------");
     }
     else
-      printf("-      ");
+      printf("-------");
   }
   printf("|\n");
 }
@@ -157,19 +170,31 @@ bool can_move(game g, int piece_num){
   bool left = true;
   bool up = true;
   bool down = true;
-  for(int i=0; i<get_height(p); ++i){
-    if(game_square_piece(g, x-1, y+i) != -1)
-      left = false;
-    if(game_square_piece(g, x+get_width(p)-1, y+i) != -1)
-      right = false;
+  if(!can_move_x(p)){
+    right = false;
+    left = false;
   }
-  for(int i=0; i<get_width(p); ++i){
-    if(game_square_piece(g, x+i, y-1) != -1)
-      down = false;
-    if(game_square_piece(g, x+i, y+get_height(p)-1) != -1)
-      up = false;
+  else{
+    for(int i=0; i<get_height(p); ++i){
+      if(game_square_piece(g, x-1, y+i) != -1)
+	left = false;
+      if(game_square_piece(g, x+get_width(p), y+i) != -1)
+	right = false;
+    }
   }
-  return right && left && down && up;
+  if(!can_move_y(p)){
+    up = false;
+    down = false;
+  }
+  else{
+    for(int i=0; i<get_width(p); ++i){
+      if(game_square_piece(g, x+i, y-1) != -1)
+	down = false;
+      if(game_square_piece(g, x+i, y+get_height(p)) != -1)
+	up = false;
+    }
+  }
+  return right || left || down || up;
 }
 
 
@@ -215,9 +240,8 @@ bool is_good_direction(game g, int piece_num, dir d){
     if(x+get_width(p) >= game_width(g))
       return not_good_direction(piece_num, "right");
     for(int i=0; i<get_height(p); ++i){
-      if(game_square_piece(g, x+get_width(p),y+i) != -1){
+      if(game_square_piece(g, x+get_width(p),y+i) != -1)
 	return not_good_direction(piece_num, "right");
-      }
     }
   }
   if(d == LEFT){
@@ -226,9 +250,8 @@ bool is_good_direction(game g, int piece_num, dir d){
     if(x-1 < 0)
       return not_good_direction(piece_num, "left");
     for(int i=0; i<get_height(p); ++i){
-      if(game_square_piece(g, x-1, y+i) != -1){
+      if(game_square_piece(g, x-1, y+i) != -1)
 	return not_good_direction(piece_num, "left");
-      }
     }
   }
   if(d == UP){
@@ -237,9 +260,8 @@ bool is_good_direction(game g, int piece_num, dir d){
     if(y+get_height(p) >= game_height(g))
       return not_good_direction(piece_num, "up");
     for(int i=0; i<get_width(p); ++i){    
-      if(game_square_piece(g, x+i, y+get_height(p)) != -1){
+      if(game_square_piece(g, x+i, y+get_height(p)) != -1)
 	return not_good_direction(piece_num, "up");
-      }
     }
   }
   if(d == DOWN){
@@ -295,6 +317,7 @@ int take_direction(game g, int piece_num, char* buf, dir* d){
 
 int take_number_case(game g, int piece_num, dir d, char* buf, int* distance){
   while(true){
+    bool good = true;
     printf("How many case?\n");
     read(0, buf,  sizeof(char)*100);
     if(strcmp(buf, "cancel") == 10)
@@ -304,19 +327,24 @@ int take_number_case(game g, int piece_num, dir d, char* buf, int* distance){
     if(strcmp(buf, "restart") == 10)
       return -2;
     if(d == RIGHT || d == LEFT){
-      if(buf[0]<48 || buf[0]>=48+game_width(g) || buf[1] != 10)
+      if(buf[0]<48 || buf[0]>=48+game_width(g) || buf[1] != 10){
 	printf("Write a number between 0 and %d\tor write cancel or exit.\n",game_width(g));
+	good = false;
       }
-    if(d == UP || d == DOWN){
-      if(buf[0]<48 || buf[0]>=48+game_height(g) || buf[1] != 10)
-	printf("Write a number between 0 and %d\tor write cancel or exit.\n",game_height(g));
     }
     else{
+      if(buf[0]<48 || buf[0]>=48+game_height(g) || buf[1] != 10){
+	printf("Write a number between 0 and %d\tor write cancel or exit.\n",game_height(g));
+	good = false;
+      }
+    }
+    if(good){
       *(distance) = atoi(buf);
       if(!play_move(g, piece_num, d, *(distance)))
 	printf("The piece %d cannot move of %d case(s).\n", piece_num, *(distance));
-      else
+      else{
 	return 1;
+      }
     }
   }
   return 0;
@@ -327,15 +355,6 @@ int take_number_case(game g, int piece_num, dir d, char* buf, int* distance){
 void usage(char* str){
   fprintf(stderr, "Usage: %s -game <int level>\n", str);
   return exit(EXIT_FAILURE);
-}
-
-
-void test_init_game(game g){
-  for(int y= game_height(g)-1; y>=0; --y){
-    for(int x= 0; x<game_width(g); ++x)
-      printf("(%d, %d): %d\t", x, y, game_square_piece(g, x, y));
-    printf("\n");
-  }
 }
 
 
@@ -357,7 +376,6 @@ int main(int argc, char* argv[]){
   if(level <= 0)
     usage(argv[0]);
   game g = init_game(level, file);
-  test_init_game(g);
   char buf[3][100];
   int piece_num;
   dir d;
