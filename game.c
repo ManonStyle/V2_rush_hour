@@ -141,7 +141,7 @@ int game_height(cgame g){
   return g->height;
 }
 
-/**
+q/**
  * @brief return the number of then piece located on this square (-1 if no piece is present)
  * @param game
  * @param x-coor of the square
