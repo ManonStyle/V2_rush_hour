@@ -13,12 +13,6 @@ struct piece_s {
   bool move_y;
 };
 
-typedef struct piece_s* piece;
-typedef const struct piece_s* cpiece;
-
-
-typedef enum dir_e {UP, LEFT, DOWN, RIGHT} dir;
-
 
 piece new_piece_rh(int x, int y, bool small, bool horizontal){
   piece p = (piece)malloc(sizeof(struct piece_s));
@@ -48,7 +42,7 @@ piece new_piece_rh(int x, int y, bool small, bool horizontal){
 }
 
 
-d delete_piece (piece p){
+void delete_piece (piece p){
   free(p);
 }
 
@@ -132,7 +126,7 @@ int get_width(cpiece p){
 
 
 bool is_horizontal(cpiece p){
-  return p->move_x
+  return p->move_x;
 }
 
 
