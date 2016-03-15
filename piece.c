@@ -79,7 +79,7 @@ bool intersect(cpiece p1, cpiece p2){
   bool intersect_y = false;
   for(int i=0; i<get_width(p1); ++i){
     if(!intersect_x)
-    for(int j=0; i<get_width(p2); ++i){
+    for(int j=0; j<get_width(p2); ++j){
       if(x1+i == x2+j){
 	intersect_x = true;
 	break;
@@ -92,7 +92,7 @@ bool intersect(cpiece p1, cpiece p2){
     return false;
   for(int i=0; i<get_height(p1); ++i){
     if(!intersect_y)
-    for(int j=0; i<get_height(p2); ++i){
+    for(int j=0; j<get_height(p2); ++j){
       if(y1+i == y2+j){
 	intersect_y = true;
 	break;
