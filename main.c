@@ -7,8 +7,6 @@
 #include "piece.h"
 
 
-bool game_over_ar(game g);
-
 
 struct dir_option_s{
   char name[6];
@@ -25,21 +23,19 @@ typedef bool (f_game)(int);
 struct game_option_s{
   char name[4];
   char file[30];
-  int y;
-  f_game game_over;
 };
 
 typedef struct game_option_s* game_option;
-const game_option game_chose[] = {{"-rh", "game_rh.txt", game_over_hr},{"-ar", "game_ar.txt", game_over_ar}};
+const game_option game_chose[] = {{"-rh", "game_rh.txt"},{"-ar", "game_ar.txt"}};
 
 
 
-void print_line_empty(game g, int y, int y_end){
+void print_line_empty(game g, int y){
   for(int x=0; x<game_whidth(g); ++x)
     printf("|      ");
-  cpiece p = game_piece(g, 0);
-  if(y >=  y_end && y < y_end+get_height(p)){
-    if(y == y_end && y == y_end+get_height(p)-1)
+  cpiece p = game_piece(g, game_nb_pieces(g));
+  if(y >= get_y(p) && y < get_y(p) +get_height(p)){
+    if(y == get_y(p) && y == get_y(p)+get_height(p)-1)
       printf("------\n");
     else
       printf("\n");
@@ -50,7 +46,7 @@ void print_line_empty(game g, int y, int y_end){
 
 
 
-void print_line(game g, int y, int y_end){
+void print_line(game g, int y){
   for(int x=0; x<game_whidth(g); ++x){
     int piece_num = game_square_piece (g, x, y);
     if(piece_num != -1)
@@ -58,9 +54,9 @@ void print_line(game g, int y, int y_end){
     else
       printf("|      ");
   }
-  cpiece p = game_piece(g, 0);
-  if(y >= y_end && y < y_end+get_height(p)){
-     if(y == y_end && y == y_end+get_height(p)-1)
+  cpiece p = game_piece(g, game_nb_pieces(g));
+  if(y >= get_y(p) && y < get_y(p)+get_height(p)){
+     if(y == get_y(p) && y == get_y(p)+get_height(p)-1)
        printf(" exit \n");
      else
        printf("\n");
@@ -71,7 +67,7 @@ void print_line(game g, int y, int y_end){
 
 
 
-void print_line_end(game g, int y, int y_end){
+void print_line_end(game g, int y){
   for(int x=0; x<game_whidth(g); ++x){
     int piece_num = game_square_piece (g, x, y-1);
     if(piece_num != -1)
@@ -79,9 +75,9 @@ void print_line_end(game g, int y, int y_end){
     else
       printf("-      ");
   }
-  cpiece p = game_piece(g, 0);
-  if(y >= y_end && y < y_end+get_height(p)){
-    if(y == get_y(p) && y == y_end+get_height(p)-1)
+  cpiece p = game_piece(g, game_nb_pieces(g));
+  if(y >= get_y(p) && y < get_y(p)+get_height(p)){
+    if(y == get_y(p) && y == get_y(p)+get_height(p)-1)
       printf("|\n");
     else
       printf("\n");
@@ -93,23 +89,23 @@ void print_line_end(game g, int y, int y_end){
 
 
 // Print the board of the current game in the terminal
-void print_game(game g, int y_end){
+void print_game(game g){
   printf("-------------------------------------------\n");
   for(int y= game_height(g)-1; y>0; --y){ 
-    print_line_empty(g, y, y_end);
-    print_line(g, y, y_end);
-    print_line_empty(g, y, y_end);
-    print_line_end(g, y, y_end);
+    print_line_empty(g, y);
+    print_line(g, y);
+    print_line_empty(g, y);
+    print_line_end(g, y);
   }
-  print_line_empty(g, 0, y_end);
-  print_line(g, 0, y_end);
-  print_line_empty(g, 0, y_end);
+  print_line_empty(g, 0);
+  print_line(g, 0);
+  print_line_empty(g, 0);
   printf("-------------------------------------------\n");
 }
 
 
 
-game init_game(int level, char* file, int* y_end){
+game init_game(int level, char* file){
   FILE* f = fopen(file, "r");
   if(f == NULL)
     exit(EXIT_FAILURE);
@@ -126,12 +122,10 @@ game init_game(int level, char* file, int* y_end){
   splited = strtok(NULL, limit);
   int height = atoi(splited);
   splited = strtok(NULL, limit);
-  *y_end = atoi(splited);
-  splited = strtok(NULL, limit);
   int nb_pieces = atoi(splited);
   piece pieces[nb_pieces];
   char value[1];
-  for(int i=0; i<nb_pieces; ++i){
+  for(int i=0; i<=nb_pieces; ++i){
     splited = strtok(NULL, limit);
     printf("%s\n", splited);
     value[0] = splited[0];
@@ -350,20 +344,20 @@ int main(int argc, char* argv[]){
   int level = atoi(argv[1]);
   if(level <= 0)
     usage(argv[0]);
-  int y_end;
-  game g = init_game(level, file, &(y_end));
+  game g = init_game(level, file);
   char buf[3][100];
   int piece_num;
   dir d;
   int distance;
   int back_code;
+  cpiece init_p = game_piece(g, 0);
   while(!game_over_hr(g)){
     bool good = false;
     while(!good){
       //Loop for the break of cancel instruction
       while(!good){
 	system("clear");
-	print_game(g, y_end);
+	print_game(g);
 	printf("Move the pieces for free the piece 0 to the exit:\n");
 	printf("Write 'exit' for quit the game, 'cancel' for restart the current move or 'restart' for restart all the level game.\n");
 	printf("Total move: %d\n",game_nb_moves(g));
