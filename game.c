@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include "game.h"
 
-#define SIZE_ARRAY 6
 
 
 
