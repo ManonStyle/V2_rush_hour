@@ -24,7 +24,7 @@ game new_game_hr (int nb_pieces, piece *pieces){
     fprintf(stderr, "Allocation problem");
     exit(EXIT_FAILURE);
   }
-  for(int i=0; i<nb_pieces; ++i){
+  for(int i=0; i<=nb_pieces; ++i){
     g->pieces[i] = new_piece_rh(0, 0, true, true);
     copy_piece(pieces[i], g->pieces[i]);
   }
@@ -55,7 +55,7 @@ int game_nb_pieces(cgame g){
 }
 
 cpiece game_piece(cgame g, int piece_num){
-  if(piece_num >= g->nb_pieces){
+  if(piece_num > g->nb_pieces){
     fprintf(stderr, "index is out of range\n");
     return NULL;
   }
@@ -122,7 +122,7 @@ game new_game (int width, int height, int nb_pieces, piece *pieces){
     fprintf(stderr, "Allocation problem");
     exit(EXIT_FAILURE);
   }
-  for(int i=0; i<nb_pieces; ++i){
+  for(int i=0; i<=nb_pieces; ++i){
     g->pieces[i] = new_piece_rh(0, 0, true, true);
     copy_piece(pieces[i], g->pieces[i]);
   }
@@ -140,15 +140,18 @@ int game_height(cgame g){
 
 int game_square_piece (game g, int x, int y){
   int px, py, pw, ph;
-  for (int piece_num=0; piece_num<g->nb_pieces; ++piece_num) {
-    px = get_x(g->pieces[piece_num]);
-    py = get_y(g->pieces[piece_num]);
-    pw = get_width(g->pieces[piece_num]);
-    ph = get_height(g->pieces[piece_num]);
-    for (int w=0; w<ph; ++w)
-      for (int h=0; h<pw; ++h)
-	if ( x==px+w && y==py+h )
+  for (int piece_num= 0; piece_num<g->nb_pieces; ++piece_num) {
+    cpiece p = g->pieces[piece_num];
+    px = get_x(p);
+    py = get_y(p);
+    pw = get_width(p);
+    ph = get_height(p);
+    for (int w=0; w<pw; ++w){
+      for (int h=0; h<ph; ++h){
+	if ( x==px+w && y==py+h)
 	  return piece_num;
+      }
+    }
   }
   return -1;
 }
