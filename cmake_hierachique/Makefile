@@ -3,4 +3,4 @@ build:
 	./install.sh
 
 clean:
-	rm -rf build/ *~ *# jeu
+	rm -rf build/ *~ *#
