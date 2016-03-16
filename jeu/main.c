@@ -41,7 +41,7 @@ void print_line_empty(game g, int y){
   }
   cpiece p = game_piece(g, game_nb_pieces(g));
   if(y >= get_y(p) && y < get_y(p) +get_height(p)){
-    if(y == get_y(p) && y == get_y(p)+get_height(p)-1)
+    if(y == get_y(p) || y == get_y(p)+get_height(p)-1)
       printf("------\n");
     else
       printf("\n");
@@ -66,10 +66,7 @@ void print_line(game g, int y){
   }
   cpiece p = game_piece(g, game_nb_pieces(g));
   if(y >= get_y(p) && y < get_y(p)+get_height(p)){
-     if(y == get_y(p) && y == get_y(p)+get_height(p)-1)
-       printf(" exit \n");
-     else
-       printf("\n");
+    printf(" exit \n");
   }
   else
     printf("|\n");
@@ -98,14 +95,21 @@ void print_line_end(game g, int y){
     else
       printf("-------");
   }
-  printf("|\n");
+  cpiece p = game_piece(g, game_nb_pieces(g));
+  if(y > get_y(p) && y < get_y(p)+get_height(p)){
+    printf(" \n");
+  }
+  else
+    printf("|\n");
 }
 
 
 
 // Print the board of the current game in the terminal
 void print_game(game g){
-  printf("-------------------------------------------\n");
+  for(int x=0; x<game_width(g); ++x)
+    printf("-------");
+  printf("-\n");
   for(int y= game_height(g)-1; y>0; --y){ 
     print_line_empty(g, y);
     print_line(g, y);
@@ -115,7 +119,9 @@ void print_game(game g){
   print_line_empty(g, 0);
   print_line(g, 0);
   print_line_empty(g, 0);
-  printf("-------------------------------------------\n");
+  for(int x=0; x<game_width(g); ++x)
+    printf("-------");
+  printf("-\n");
 }
 
 

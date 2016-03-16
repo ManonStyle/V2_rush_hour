@@ -79,24 +79,32 @@ bool play_move(game g, int piece_num, dir d, int distance){
       return false;
   }
   if(d == RIGHT){
+    if(get_x(p)+get_width(p)+distance-1 >= game_width(g))
+      return false;
     for(int i=0; i<distance; ++i){
       if(game_square_piece(g, get_x(p)+get_width(p)+i, get_y(p)) != -1)
 	return false;
     }
   }
   else if(d == LEFT){
+    if(get_x(p)-distance < 0)
+       return false;
     for(int i=0; i<distance; ++i){
       if(game_square_piece(g, get_x(p)-1-i, get_y(p)) != -1)
 	return false;
     }
   }
   else if(d == UP){
+    if(get_y(p)+get_height(p)+distance-1 >= game_height(g))
+       return false;
     for(int i=0; i<distance; ++i){
       if(game_square_piece(g, get_x(p), get_y(p)+get_height(p)+i) != -1)
 	return false;
     }
   }
   else{
+    if(get_y(p)-distance < 0)
+      return false;
     for(int i=0; i<distance; ++i){
       if(game_square_piece(g, get_x(p), get_y(p)-1-i) != -1)
 	return false;
