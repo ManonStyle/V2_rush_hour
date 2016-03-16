@@ -32,7 +32,7 @@ game new_game_hr (int nb_pieces, piece *pieces){
 }
 
 void delete_game (game g){
-  for(int i=0; i<g->nb_pieces; ++i)
+  for(int i=0; i<=g->nb_pieces; ++i)
     delete_piece(g->pieces[i]);
   free(g->pieces);
   free(g);
@@ -110,6 +110,7 @@ bool play_move(game g, int piece_num, dir d, int distance){
 	return false;
     }
   }
+  g->nb_moves += distance;
   move_piece(p, d, distance);
   return true;
 }
