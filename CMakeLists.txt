@@ -24,12 +24,14 @@ enable_testing()
 # cmake de test_piece1.c
 add_executable(test_piece test_piece1.c piece.c)
 target_link_libraries(test_piece game)
+install(TARGETS test_piece RUNTIME DESTINATION ${JEU_SOURCE_DIR})
 add_test(tp test_piece)
 set_tests_properties(tp PROPERTIES PASS_REGULAR_EXPRESSION "Youpi !")
 
 # cmake de test_game1.c
 add_executable(test_game test_game1.c game.c)
 target_link_libraries(test_game game)
+install(TARGETS test_game RUNTIME DESTINATION ${JEU_SOURCE_DIR})
 add_test(tg test_game)
 set_tests_properties(tg PROPERTIES PASS_REGULAR_EXPRESSION "Youpi !")
 
