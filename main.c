@@ -404,6 +404,7 @@ int main(int argc, char* argv[]){
 	if(back_code == -1)
 	  return EXIT_SUCCESS;
 	if(back_code == -2){
+	  delete_game(g);
 	  g = init_game(level, file);
 	  break;
 	}
@@ -414,6 +415,7 @@ int main(int argc, char* argv[]){
 	if(back_code == -1)
 	  return EXIT_SUCCESS;
 	if(back_code == -2){
+	  delete_game(g);
 	  g = init_game(level, file);
 	  break;
 	}
@@ -424,6 +426,7 @@ int main(int argc, char* argv[]){
 	if(back_code == -1)
 	  return EXIT_SUCCESS;
 	if(back_code == -2){
+	  delete_game(g);
 	  g = init_game(level, file);
 	  break;
 	}
