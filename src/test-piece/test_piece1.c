@@ -50,6 +50,13 @@ void tear_down() {
     delete_piece(pieces[i]);
 }
 
+
+
+// test unitaire
+
+
+// 1 - test_new_piece_rh
+
 bool test_new_piece_rh() {
   bool result = true;
   for (int x = 0 ; x < 5; x++)
@@ -81,6 +88,9 @@ bool test_new_piece_rh() {
   return result;
 }
 
+
+// 2 - test_new_piece
+
 bool test_new_piece() {
   bool result = true;
   for (int x = 0; x < 5; x++)
@@ -101,6 +111,9 @@ bool test_new_piece() {
   return result;
 }
 
+
+// 3 - test_copy_piece
+
 bool test_copy_piece() {
   bool result = true;
   piece p = new_piece(0, 0, 0, 0, true, true);
@@ -119,6 +132,9 @@ bool test_copy_piece() {
   return result;
 }
 
+
+// 4 - test_intersect
+
 bool test_intersect() {
   bool result = true;
   set_up();
@@ -133,6 +149,9 @@ bool test_intersect() {
   tear_down();
   return result;
 }
+
+
+// 5 - test_move_piece
 
 bool test_move_piece() {
   bool result = true;
@@ -169,6 +188,9 @@ bool test_move_piece() {
   delete_piece(p);
   return result;
 }
+
+
+// main
 
 int main (int argc, char *argv[])
 {
