@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /home/gg/Bureau/projet/v2_rush_hour
-# Build directory: /home/gg/Bureau/projet/v2_rush_hour/build
+# Source directory: /home/alienor/Documents/edd1/v2_rush_hour
+# Build directory: /home/alienor/Documents/edd1/v2_rush_hour/build
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

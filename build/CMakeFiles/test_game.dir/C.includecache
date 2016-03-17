@@ -6,25 +6,25 @@
 
 #IncludeRegexTransform: 
 
-/home/gg/Bureau/projet/v2_rush_hour/game.c
+/home/alienor/Documents/edd1/v2_rush_hour/game.c
 stdlib.h
 -
 stdio.h
 -
 game.h
-/home/gg/Bureau/projet/v2_rush_hour/game.h
+/home/alienor/Documents/edd1/v2_rush_hour/game.h
 
-/home/gg/Bureau/projet/v2_rush_hour/game.h
+/home/alienor/Documents/edd1/v2_rush_hour/game.h
 stdbool.h
 -
 piece.h
-/home/gg/Bureau/projet/v2_rush_hour/piece.h
+/home/alienor/Documents/edd1/v2_rush_hour/piece.h
 
-/home/gg/Bureau/projet/v2_rush_hour/piece.h
+/home/alienor/Documents/edd1/v2_rush_hour/piece.h
 stdbool.h
 -
 
-/home/gg/Bureau/projet/v2_rush_hour/test_game1.c
+/home/alienor/Documents/edd1/v2_rush_hour/test_game1.c
 stdlib.h
 -
 time.h
@@ -32,7 +32,7 @@ time.h
 stdio.h
 -
 piece.h
-/home/gg/Bureau/projet/v2_rush_hour/piece.h
+/home/alienor/Documents/edd1/v2_rush_hour/piece.h
 game.h
-/home/gg/Bureau/projet/v2_rush_hour/game.h
+/home/alienor/Documents/edd1/v2_rush_hour/game.h
 

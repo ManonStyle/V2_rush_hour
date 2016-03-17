@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/gg/Bureau/projet/v2_rush_hour/piece.c
+/home/alienor/Documents/edd1/v2_rush_hour/piece.c
 stdbool.h
 -
 stdio.h
@@ -14,13 +14,13 @@ stdio.h
 stdlib.h
 -
 piece.h
-/home/gg/Bureau/projet/v2_rush_hour/piece.h
+/home/alienor/Documents/edd1/v2_rush_hour/piece.h
 
-/home/gg/Bureau/projet/v2_rush_hour/piece.h
+/home/alienor/Documents/edd1/v2_rush_hour/piece.h
 stdbool.h
 -
 
-/home/gg/Bureau/projet/v2_rush_hour/test_piece1.c
+/home/alienor/Documents/edd1/v2_rush_hour/test_piece1.c
 stdlib.h
 -
 time.h
@@ -28,5 +28,5 @@ time.h
 stdio.h
 -
 piece.h
-/home/gg/Bureau/projet/v2_rush_hour/piece.h
+/home/alienor/Documents/edd1/v2_rush_hour/piece.h
 
