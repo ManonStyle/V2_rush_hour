@@ -19,7 +19,7 @@ game new_game_hr (int nb_pieces, piece *pieces){
   g->height = 6;
   g->nb_pieces = nb_pieces;
   g->nb_moves = 0;
-  g->pieces = (piece*)malloc(nb_pieces*sizeof(piece));
+  g->pieces = (piece*)malloc((nb_pieces+1)*sizeof(piece));
   if (g == NULL){
     fprintf(stderr, "Allocation problem");
     exit(EXIT_FAILURE);
@@ -127,7 +127,7 @@ game new_game (int width, int height, int nb_pieces, piece *pieces){
   g->height = height;
   g->nb_pieces = nb_pieces;
   g->nb_moves = 0;
-  g->pieces = (piece*)malloc(nb_pieces*sizeof(piece));
+  g->pieces = (piece*)malloc((nb_pieces+1)*sizeof(piece));
   if (g == NULL){
     fprintf(stderr, "Allocation problem");
     exit(EXIT_FAILURE);
