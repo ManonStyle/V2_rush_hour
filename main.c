@@ -27,7 +27,7 @@ game_option game_chose[] = {{"-rh", "game_rh.txt"},{"-ar", "game_ar.txt"}};
 
 
 
-void print_line_empty(game g, int y){
+void print_line_empty(game g, int y, bool i){
   for(int x=0; x<game_width(g); ++x){
     int piece_num = game_square_piece (g, x, y);
     if(piece_num != -1){
@@ -41,15 +41,26 @@ void print_line_empty(game g, int y){
   }
   cpiece p = game_piece(g, game_nb_pieces(g));
   if(y >= get_y(p) && y < get_y(p) +get_height(p)){
-    if(y == get_y(p) || y == get_y(p)+get_height(p)-1)
-      printf("------\n");
+    if(y == get_y(p) || y == get_y(p)+get_height(p)-1){
+      if(i){
+	if(y == get_y(p))
+	  printf("------\n");
+	else
+	  printf("\n");
+      }
+      else{
+	if(y == get_y(p)+get_height(p)-1)
+	  printf("------\n");
+	else
+	  printf("\n");
+      }
+    }
     else
       printf("\n");
   }
   else
     printf("|\n");
 }
-
 
 
 void print_line(game g, int y){
@@ -97,7 +108,7 @@ void print_line_end(game g, int y){
   }
   cpiece p = game_piece(g, game_nb_pieces(g));
   if(y > get_y(p) && y < get_y(p)+get_height(p)){
-    printf(" \n");
+    printf(" exit\n");
   }
   else
     printf("|\n");
@@ -111,14 +122,14 @@ void print_game(game g){
     printf("-------");
   printf("-\n");
   for(int y= game_height(g)-1; y>0; --y){ 
-    print_line_empty(g, y);
+    print_line_empty(g, y, 0);
     print_line(g, y);
-    print_line_empty(g, y);
+    print_line_empty(g, y, 1);
     print_line_end(g, y);
   }
-  print_line_empty(g, 0);
+  print_line_empty(g, 0, 0);
   print_line(g, 0);
-  print_line_empty(g, 0);
+  print_line_empty(g, 0, 1);
   for(int x=0; x<game_width(g); ++x)
     printf("-------");
   printf("-\n");
