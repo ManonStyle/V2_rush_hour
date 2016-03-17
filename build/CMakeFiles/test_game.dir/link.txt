@@ -1,1 +1,0 @@
-/usr/bin/cc     CMakeFiles/test_game.dir/test_game1.c.o CMakeFiles/test_game.dir/game.c.o  -o test_game -rdynamic libgame.a 

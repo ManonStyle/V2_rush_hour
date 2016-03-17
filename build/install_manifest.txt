@@ -1,6 +1,0 @@
-/home/gg/Bureau/projet/v2_rush_hour/build/lib/libgame.a
-/home/gg/Bureau/projet/v2_rush_hour/build/include/piece.h
-/home/gg/Bureau/projet/v2_rush_hour/build/include/game.h
-/home/gg/Bureau/projet/v2_rush_hour/jeu
-/home/gg/Bureau/projet/v2_rush_hour/test_piece
-/home/gg/Bureau/projet/v2_rush_hour/test_game
