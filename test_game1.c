@@ -76,12 +76,12 @@ void tear_down_Bis() {
 bool test_new_game_rh() {
   bool result = true;
   set_up_rh();
-  game g = new_game_hr(NB_PIECES, pieces);
+  game g = new_game_hr(NB_PIECES-1, pieces);
   result = result && test_equality_int(6, game_width(g), "new_game_rh game_width");
   result = result && test_equality_int(6, game_height(g), "new_game_rh game_height");
-  result = result && test_equality_int(NB_PIECES, game_nb_pieces(g), "new_game_rh game_nb_pieces");
+  result = result && test_equality_int(NB_PIECES -1, game_nb_pieces(g), "new_game_rh game_nb_pieces");
   result = result && test_equality_int(0, game_nb_moves(g), "new_game_rh game_nb_moves");
-  for (int i = 0; i < NB_PIECES; i++){
+  for (int i = 0; i < NB_PIECES-1; i++){
     result = result && test_equality_int(get_x(pieces[i]), get_x(game_piece(g, i)), "new_game_rh get_x");
     result = result && test_equality_int(get_y(pieces[i]), get_y(game_piece(g, i)), "new_game_rh get_y");
     result = result && test_equality_int(get_height(pieces[i]), get_height(game_piece(g, i)), "new_game_rh get_height");
@@ -202,7 +202,7 @@ bool test_game_square_piece(){
 int main (int argc, char *argv[]){
   bool result = true;
 
-  //result = result && test_equality_bool(true, test_new_game_rh(), "new_game_rh");
+  result = result && test_equality_bool(true, test_new_game_rh(), "new_game_rh");
   //result = result && test_equality_bool(true, test_new_game(), "new_game");
   //result = result && test_equality_bool(true, test_copy_game(), "copy_game");
   //result = result && test_equality_bool(true, test_play_move(), "play_move");
