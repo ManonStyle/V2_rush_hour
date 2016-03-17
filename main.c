@@ -163,7 +163,10 @@ game init_game(int level, char* file){
     pieces[i] = new_piece(x, y, width, height, move_x, move_y);
   }
   fclose(f);
-  return new_game(g_width, g_height, nb_pieces, pieces);
+  game g = new_game(g_width, g_height, nb_pieces, pieces);
+  for(int i=0; i<=nb_pieces; ++i)
+    delete_piece(pieces[i]);
+  return g;
 }
 
 
