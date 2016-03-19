@@ -1,13 +1,15 @@
 
-projet de programmation - rush-hour 
+projet de programmation - rush-hour et jeu de l'âne rouge
 
 
-implémenté par : Aliénor Brabant, Manon Philippot, Abdoul Diallo, Gérard Lézé
+implémenté par : Aliénor Brabant, Abdoul Diallo, Gérard Lézé, Manon Philippot
 
 dépot github : https://github.com/ManonStyle
 
 
 compilation :
+	./install.sh
+ou
 	mkdir build
 	cd build
 	cmake ..
@@ -17,4 +19,8 @@ execution du jeu :
 	./jeu <choix du jeu, -rh ou -ar> <numero du niveau>
 
 execution des tests :
+	cd build
 	make check
+
+desinstallation :
+	./desinstall.sh
