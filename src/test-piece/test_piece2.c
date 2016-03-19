@@ -51,34 +51,23 @@ void tear_down() {
 }
 
 
-bool test_new_piece_rh() {
+bool test_new_piece() {
   bool result = true;
-  for (int x = 0 ; x < 5; x++)
-    for (int y = 0 ; y < 5; y++)
-      for (bool small = false; !small; small = !small)
-        for (bool horizontal = false; !horizontal; horizontal = !horizontal) {
-          int size;
-          if (small)
-            size = 2;
-          else
-            size = 3;
-          piece p = new_piece_rh(x, y, small, horizontal);
-          result = result && test_equality_int(x, get_x(p),"new_piece_rh get_x");
-          result = result && test_equality_int(y, get_y(p),"new_piece_rh get_y");
-          if (horizontal) {
-            result = result && test_equality_int(1, get_height(p), "new_piece_rh get_height");
-            result = result && test_equality_int(size, get_width(p), "new_piece_rh get_width");
-	    result = result && test_equality_bool(true, can_move_x(p), "new_piece_rh can_move_x");
-	    result = result && test_equality_bool(false, can_move_y(p), "new_piece_rh can_move_y");
-          }
-          else {
-            result = result && test_equality_int(size, get_height(p), "new_piece_rh get_height");
-            result = result && test_equality_int(1, get_width(p), "new_piece_rh get_width");
-	    result = result && test_equality_bool(false, can_move_x(p), "new_piece_rh can_move_x");
-	    result = result && test_equality_bool(true, can_move_y(p), "new_piece_rh can_move_y");
-          }
-          delete_piece(p);
-        }
+  for (int x = 0; x < 5; x++)
+    for (int y = 0; y < 5; y++)
+      for (int width = 1; width < 5 ; width++)
+	for (int height = 1; height < 5; height++)
+	  for (bool move_x = false; !move_x; move_x = !move_x)
+	    for (bool move_y = false; !move_y; move_y = !move_y){
+	      piece p = new_piece(x, y, width, height, move_x, move_y);
+	      result = result && test_equality_int(x, get_x(p), "test_new_piece get_x");
+	      result = result && test_equality_int(y, get_y(p), "test_new_piece get_y");
+	      result = result && test_equality_int(width, get_width(p), "test_new_piece get_width");
+	      result = result && test_equality_int(height, get_height(p), "test_new_piece get_height");
+	      result = result && test_equality_int(move_x, can_move_x(p), "test_new_piece can_move_x");
+	      result = result && test_equality_int(move_y, can_move_y(p), "test_new_piece can_move_y");
+	      delete_piece(p);
+	    }
   return result;
 }
 
@@ -87,7 +76,7 @@ int main (int argc, char *argv[])
 {
   bool result= true;
 
-  result = result && test_equality_bool(true, test_new_piece_rh(), "new_piece_rh");
+  result = result && test_equality_bool(true, test_new_piece(), "new_piece");
 
   if (result) {
     printf("Youpi !\n");

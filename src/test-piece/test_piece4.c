@@ -51,34 +51,18 @@ void tear_down() {
 }
 
 
-bool test_new_piece_rh() {
+bool test_intersect() {
   bool result = true;
-  for (int x = 0 ; x < 5; x++)
-    for (int y = 0 ; y < 5; y++)
-      for (bool small = false; !small; small = !small)
-        for (bool horizontal = false; !horizontal; horizontal = !horizontal) {
-          int size;
-          if (small)
-            size = 2;
-          else
-            size = 3;
-          piece p = new_piece_rh(x, y, small, horizontal);
-          result = result && test_equality_int(x, get_x(p),"new_piece_rh get_x");
-          result = result && test_equality_int(y, get_y(p),"new_piece_rh get_y");
-          if (horizontal) {
-            result = result && test_equality_int(1, get_height(p), "new_piece_rh get_height");
-            result = result && test_equality_int(size, get_width(p), "new_piece_rh get_width");
-	    result = result && test_equality_bool(true, can_move_x(p), "new_piece_rh can_move_x");
-	    result = result && test_equality_bool(false, can_move_y(p), "new_piece_rh can_move_y");
-          }
-          else {
-            result = result && test_equality_int(size, get_height(p), "new_piece_rh get_height");
-            result = result && test_equality_int(1, get_width(p), "new_piece_rh get_width");
-	    result = result && test_equality_bool(false, can_move_x(p), "new_piece_rh can_move_x");
-	    result = result && test_equality_bool(true, can_move_y(p), "new_piece_rh can_move_y");
-          }
-          delete_piece(p);
-        }
+  set_up();
+  for (int i = 0; i < NB_PIECES; i++)
+    for (int j = 0; j < NB_PIECES; j++) {
+      result = result && test_equality_bool (i == j, intersect(pieces[i], pieces[j]), "intersect");
+    }
+  piece pb_piece = new_piece(1, 0, 3, 1, true, true);
+  result = result && test_equality_bool(true, intersect(pieces[9], pb_piece), "intersect pb 1");
+  result = result && test_equality_bool(false, intersect(pieces[8], pb_piece), "intersect pb 2");
+  delete_piece(pb_piece);
+  tear_down();
   return result;
 }
 
@@ -87,7 +71,7 @@ int main (int argc, char *argv[])
 {
   bool result= true;
 
-  result = result && test_equality_bool(true, test_new_piece_rh(), "new_piece_rh");
+  result = result && test_equality_bool(true, test_intersect(), "intersect");
 
   if (result) {
     printf("Youpi !\n");
