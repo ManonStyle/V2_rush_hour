@@ -9,11 +9,6 @@ dépot github : https://github.com/ManonStyle
 
 compilation :
 	./install.sh
-ou
-	mkdir build
-	cd build
-	cmake ..
-	make install
 
 execution du jeu : 
 	./rush_hour-ane_rouge-game <choix du jeu, -rh ou -ar> <numero du niveau>

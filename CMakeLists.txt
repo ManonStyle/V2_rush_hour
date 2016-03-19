@@ -17,3 +17,5 @@ enable_testing()
 add_subdirectory(src)
 
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+
+
