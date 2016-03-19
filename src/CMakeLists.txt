@@ -44,10 +44,47 @@ add_test(tp5-test_move_piece test_piece-test_move_piece)
 set_tests_properties(tp5-test_move_piece PROPERTIES PASS_REGULAR_EXPRESSION "Youpi !")
 set_tests_properties (tp5-test_move_piece PROPERTIES TIMEOUT 1)
 
+
 # cmake test-game
 
-add_executable(test-game test-game/test_game1.c game.c)
-target_link_libraries(test-game game)
-add_test(tg test-game)
-set_tests_properties(tg PROPERTIES PASS_REGULAR_EXPRESSION "Youpi !")
-set_tests_properties (tg PROPERTIES TIMEOUT 1)
+add_executable(test_game-test_new_game_rh test-game/test_game1.c game.c)
+target_link_libraries(test_game-test_new_game_rh game)
+add_test(tg1-test_new_game_rh test_game-test_new_game_rh)
+set_tests_properties(tg1-test_new_game_rh PROPERTIES PASS_REGULAR_EXPRESSION "Youpi !")
+set_tests_properties (tg1-test_new_game_rh PROPERTIES TIMEOUT 1)
+
+add_executable(test_game-test_new_game test-game/test_game2.c game.c)
+target_link_libraries(test_game-test_new_game game)
+add_test(tg2-test_new_game test_game-test_new_game)
+set_tests_properties(tg2-test_new_game PROPERTIES PASS_REGULAR_EXPRESSION "Youpi !")
+set_tests_properties (tg2-test_new_game PROPERTIES TIMEOUT 1)
+
+add_executable(test_game-test_copy_game test-game/test_game3.c game.c)
+target_link_libraries(test_game-test_copy_game game)
+add_test(tg3-test_copy_game test_game-test_copy_game)
+set_tests_properties(tg3-test_copy_game PROPERTIES PASS_REGULAR_EXPRESSION "Youpi !")
+set_tests_properties (tg3-test_copy_game PROPERTIES TIMEOUT 1)
+
+add_executable(test_game-test_play_move test-game/test_game4.c game.c)
+target_link_libraries(test_game-test_play_move game)
+add_test(tg4-test_play_move test_game-test_play_move)
+set_tests_properties(tg4-test_play_move PROPERTIES PASS_REGULAR_EXPRESSION "Youpi !")
+set_tests_properties (tg4-test_play_move PROPERTIES TIMEOUT 1)
+
+add_executable(test_game-test_game_square_piece test-game/test_game5.c game.c)
+target_link_libraries(test_game-test_game_square_piece game)
+add_test(tg5-test_game_square_piece test_game-test_game_square_piece)
+set_tests_properties(tg5-test_game_square_piece PROPERTIES PASS_REGULAR_EXPRESSION "Youpi !")
+set_tests_properties (tg5-test_game_square_piece PROPERTIES TIMEOUT 1)
+
+
+
+
+
+
+
+
+
+
+
+

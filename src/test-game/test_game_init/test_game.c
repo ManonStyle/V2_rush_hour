@@ -54,15 +54,15 @@ void tear_down_rh() {
 piece piecesBis[NB_PIECES+1];
 /* configue de test Bis 
 4.....
-...00.
-.11...
-.11...
+...11.
+.00...
+.00...
 2....3
  */
 
 void set_up_Bis() {
-  piecesBis[0] = new_piece(3, 3, 2, 1, true, true);
-  piecesBis[1] = new_piece(1, 1, 2, 2, true, true);
+  piecesBis[0] = new_piece(1, 1, 2, 2, true, true);
+  piecesBis[1] = new_piece(3, 3, 2, 1, true, true);
   piecesBis[2] = new_piece(0, 0, 1, 1, true, false);
   piecesBis[3] = new_piece(5, 0, 1, 1, false, true);
   piecesBis[4] = new_piece(0, 4, 1, 1, true, true);
@@ -73,6 +73,10 @@ void tear_down_Bis() {
   for (int i = 0 ; i < NB_PIECES+1; i++)
     delete_piece(piecesBis[i]);
 }
+
+// TU
+
+// 1
 
 bool test_new_game_rh() {
   bool result = true;
@@ -91,9 +95,11 @@ bool test_new_game_rh() {
     result = result && test_equality_bool(can_move_y(pieces[i]), can_move_y(game_piece(g, i)), "new_game_rh can_move_y");
     }
   tear_down_rh();
-  //delete_game(g);
+  delete_game(g);
   return result; 
   }
+
+// 2
 
 bool test_new_game() {
   bool result = true;
@@ -116,12 +122,14 @@ bool test_new_game() {
   return result; 
 }
 
+// 3
+
 bool test_copy_game() {
   bool result = true;
   set_up_Bis();
   game g = new_game(WIDTH, HEIGHT, NB_PIECES, piecesBis);
-  piece piecesC[] = {new_piece(0, 0, 1, 1, true, true)};
-  game gC = new_game(1, 1, 1, piecesC);
+  set_up_rh();
+  game gC = new_game(1, 1, NB_PIECES, pieces);
   copy_game(g, gC);
   result = result && test_equality_int(game_width(g), game_width(gC), "copy_game game_width");
   result = result && test_equality_int(game_height(g), game_height(gC), "copy_game game_height");
@@ -134,28 +142,31 @@ bool test_copy_game() {
     result = result && test_equality_int(get_width(game_piece(g, i)), get_width(game_piece(gC, i)), "copy_game get_width");
     result = result && test_equality_bool(can_move_x(game_piece(g, i)), can_move_x(game_piece(gC, i)), "copy_game can_move_x");
     result = result && test_equality_bool(can_move_y(game_piece(g, i)), can_move_y(game_piece(gC, i)), "copy_game can_move_y");
-
-  }
+    }
   delete_game(g);
   delete_game(gC);
   tear_down_Bis();
+  tear_down_rh();
   return result;
 }
+void fillArrayWithPieces();
+
+// 4
 
 bool test_play_move(){
   bool result = true;
   set_up_Bis();
   game g = new_game(WIDTH, HEIGHT, NB_PIECES, piecesBis);
   result = result && test_equality_bool(false, game_over_hr(g), "play_move game_over_hr false");
-  result = result && test_equality_bool(true, play_move(g, 0, LEFT, 3), "play_move LEFT true");
-  result = result && test_equality_bool(false, play_move(g, 0, LEFT, 1), "play_move LEFT false");
-  result = result && test_equality_bool(true, play_move(g, 0, RIGHT, 4), "play_move RIGHT true");
-  result = result && test_equality_bool(false, play_move(g, 0, RIGHT, 1), "play_move RIGHT false");
-  result = result && test_equality_bool(true, play_move(g, 1, UP, 2), "play_move UP true");
-  result = result && test_equality_bool(false, play_move(g, 1, UP, 1), "play_move UP false");
-  result = result && test_equality_bool(true, play_move(g, 1, DOWN, 3), "play_move DOWN true");
-  result = result && test_equality_bool(false, play_move(g, 1, DOWN, 1), "play_move DOWN false");
-  play_move(g, 1, RIGHT, 1);
+  result = result && test_equality_bool(true, play_move(g, 1, LEFT, 3), "play_move LEFT true");
+  result = result && test_equality_bool(false, play_move(g, 1, LEFT, 1), "play_move LEFT false");
+  result = result && test_equality_bool(true, play_move(g, 1, RIGHT, 4), "play_move RIGHT true");
+  result = result && test_equality_bool(false, play_move(g, 1, RIGHT, 1), "play_move RIGHT false");
+  result = result && test_equality_bool(true, play_move(g, 0, UP, 2), "play_move UP true");
+  result = result && test_equality_bool(false, play_move(g, 0, UP, 1), "play_move UP false");
+  result = result && test_equality_bool(true, play_move(g, 0, DOWN, 3), "play_move DOWN true");
+  result = result && test_equality_bool(false, play_move(g, 0, DOWN, 1), "play_move DOWN false");
+  play_move(g, 0, RIGHT, 1);
   result = result && test_equality_bool(true, game_over_hr(g), "play_move game_over_hr true");
   result = result && test_equality_bool(false, play_move(g, 3, LEFT, 1), "play_move_x !can_move_x LEFT");
   result = result && test_equality_bool(false, play_move(g, 3, RIGHT, 1), "play_move_x !can_move_x RIGHT");
@@ -167,6 +178,8 @@ bool test_play_move(){
   return result;
 }
 
+
+// 5
 
 int piecesNum[WIDTH][HEIGHT];
 
@@ -185,6 +198,8 @@ void fillArrayWithPieces(){
   }
 }
 
+// 6
+
 bool test_game_square_piece(){
   bool result = true;
   set_up_Bis();
@@ -200,14 +215,17 @@ bool test_game_square_piece(){
   return result;
 }
 
+
+
+
 int main (int argc, char *argv[]){
   bool result = true;
 
   result = result && test_equality_bool(true, test_new_game_rh(), "new_game_rh");
-  //result = result && test_equality_bool(true, test_new_game(), "new_game");
-  //result = result && test_equality_bool(true, test_copy_game(), "copy_game");
-  //result = result && test_equality_bool(true, test_play_move(), "play_move");
-  //result = result && test_equality_bool(true, test_game_square_piece(), "game_square_piece");
+  result = result && test_equality_bool(true, test_new_game(), "new_game");
+  result = result && test_equality_bool(true, test_copy_game(), "copy_game");
+  result = result && test_equality_bool(true, test_play_move(), "play_move");
+  result = result && test_equality_bool(true, test_game_square_piece(), "game_square_piece");
 
   if (result) {
     printf("Youpi !\n");
@@ -216,7 +234,3 @@ int main (int argc, char *argv[]){
   else
     return EXIT_FAILURE;
  }
-
-
-//NB_PIECES+1 dans l'initialisation des tableaux pour inserer la piece fantome
-//Ajout de la pièce fantome

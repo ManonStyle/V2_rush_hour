@@ -76,33 +76,39 @@ void tear_down_Bis() {
 
 
 
-bool test_new_game_rh() {
+bool test_copy_game() {
   bool result = true;
+  set_up_Bis();
+  game g = new_game(WIDTH, HEIGHT, NB_PIECES, piecesBis);
   set_up_rh();
-  game g = new_game_hr(NB_PIECES, pieces);
-  result = result && test_equality_int(6, game_width(g), "new_game_rh game_width");
-  result = result && test_equality_int(6, game_height(g), "new_game_rh game_height");
-  result = result && test_equality_int(NB_PIECES, game_nb_pieces(g), "new_game_rh game_nb_pieces");
-  result = result && test_equality_int(0, game_nb_moves(g), "new_game_rh game_nb_moves");
+  game gC = new_game(1, 1, NB_PIECES, pieces);
+  copy_game(g, gC);
+  result = result && test_equality_int(game_width(g), game_width(gC), "copy_game game_width");
+  result = result && test_equality_int(game_height(g), game_height(gC), "copy_game game_height");
+  result = result && test_equality_int(game_nb_pieces(g), game_nb_pieces(gC), "copy_game game_nb_pieces");
+  result = result && test_equality_int(game_nb_moves(g), game_nb_moves(gC), "copy_game game_nb_moves");
   for (int i = 0; i < NB_PIECES; i++){
-    result = result && test_equality_int(get_x(pieces[i]), get_x(game_piece(g, i)), "new_game_rh get_x");
-    result = result && test_equality_int(get_y(pieces[i]), get_y(game_piece(g, i)), "new_game_rh get_y");
-    result = result && test_equality_int(get_height(pieces[i]), get_height(game_piece(g, i)), "new_game_rh get_height");
-    result = result && test_equality_int(get_width(pieces[i]), get_width(game_piece(g, i)), "new_game_rh get_width");
-    result = result && test_equality_bool(can_move_x(pieces[i]), can_move_x(game_piece(g, i)), "new_game_rh can_move_x");
-    result = result && test_equality_bool(can_move_y(pieces[i]), can_move_y(game_piece(g, i)), "new_game_rh can_move_y");
+    result = result && test_equality_int(get_x(game_piece(g, i)), get_x(game_piece(gC, i)), "copy_game get_x");
+    result = result && test_equality_int(get_y(game_piece(g, i)), get_y(game_piece(gC, i)), "copy_game get_y");
+    result = result && test_equality_int(get_height(game_piece(g, i)), get_height(game_piece(gC, i)), "copy_game get_height");
+    result = result && test_equality_int(get_width(game_piece(g, i)), get_width(game_piece(gC, i)), "copy_game get_width");
+    result = result && test_equality_bool(can_move_x(game_piece(g, i)), can_move_x(game_piece(gC, i)), "copy_game can_move_x");
+    result = result && test_equality_bool(can_move_y(game_piece(g, i)), can_move_y(game_piece(gC, i)), "copy_game can_move_y");
     }
-  tear_down_rh();
   delete_game(g);
-  return result; 
-  }
+  delete_game(gC);
+  tear_down_Bis();
+  tear_down_rh();
+  return result;
+}
+void fillArrayWithPieces();
 
 
 
 int main (int argc, char *argv[]){
   bool result = true;
 
-  result = result && test_equality_bool(true, test_new_game_rh(), "new_game_rh");
+  result = result && test_equality_bool(true, test_copy_game(), "copy_game");
 
   if (result) {
     printf("Youpi !\n");

@@ -16,11 +16,11 @@ ou
 	make install
 
 execution du jeu : 
-	./jeu <choix du jeu, -rh ou -ar> <numero du niveau>
+	./rush_hour-ane_rouge-game <choix du jeu, -rh ou -ar> <numero du niveau>
 
 execution des tests :
 	cd build
 	make check
 
 desinstallation :
-	./desinstall.sh
+	./uninstall.sh

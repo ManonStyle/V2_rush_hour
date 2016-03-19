@@ -51,6 +51,7 @@ void tear_down() {
 }
 
 
+
 bool test_intersect() {
   bool result = true;
   set_up();
@@ -65,6 +66,7 @@ bool test_intersect() {
   tear_down();
   return result;
 }
+
 
 
 int main (int argc, char *argv[])

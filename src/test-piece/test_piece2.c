@@ -51,6 +51,7 @@ void tear_down() {
 }
 
 
+
 bool test_new_piece() {
   bool result = true;
   for (int x = 0; x < 5; x++)
@@ -70,6 +71,7 @@ bool test_new_piece() {
 	    }
   return result;
 }
+
 
 
 int main (int argc, char *argv[])

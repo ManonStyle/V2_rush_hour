@@ -51,6 +51,7 @@ void tear_down() {
 }
 
 
+
 bool test_move_piece() {
   bool result = true;
   piece p = new_piece(0, 0, 0, 0, true, true);
@@ -86,6 +87,7 @@ bool test_move_piece() {
   delete_piece(p);
   return result;
 }
+
 
 
 int main (int argc, char *argv[])

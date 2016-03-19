@@ -76,33 +76,37 @@ void tear_down_Bis() {
 
 
 
-bool test_new_game_rh() {
+bool test_play_move(){
   bool result = true;
-  set_up_rh();
-  game g = new_game_hr(NB_PIECES, pieces);
-  result = result && test_equality_int(6, game_width(g), "new_game_rh game_width");
-  result = result && test_equality_int(6, game_height(g), "new_game_rh game_height");
-  result = result && test_equality_int(NB_PIECES, game_nb_pieces(g), "new_game_rh game_nb_pieces");
-  result = result && test_equality_int(0, game_nb_moves(g), "new_game_rh game_nb_moves");
-  for (int i = 0; i < NB_PIECES; i++){
-    result = result && test_equality_int(get_x(pieces[i]), get_x(game_piece(g, i)), "new_game_rh get_x");
-    result = result && test_equality_int(get_y(pieces[i]), get_y(game_piece(g, i)), "new_game_rh get_y");
-    result = result && test_equality_int(get_height(pieces[i]), get_height(game_piece(g, i)), "new_game_rh get_height");
-    result = result && test_equality_int(get_width(pieces[i]), get_width(game_piece(g, i)), "new_game_rh get_width");
-    result = result && test_equality_bool(can_move_x(pieces[i]), can_move_x(game_piece(g, i)), "new_game_rh can_move_x");
-    result = result && test_equality_bool(can_move_y(pieces[i]), can_move_y(game_piece(g, i)), "new_game_rh can_move_y");
-    }
-  tear_down_rh();
+  set_up_Bis();
+  game g = new_game(WIDTH, HEIGHT, NB_PIECES, piecesBis);
+  result = result && test_equality_bool(false, game_over_hr(g), "play_move game_over_hr false");
+  result = result && test_equality_bool(true, play_move(g, 1, LEFT, 3), "play_move LEFT true");
+  result = result && test_equality_bool(false, play_move(g, 1, LEFT, 1), "play_move LEFT false");
+  result = result && test_equality_bool(true, play_move(g, 1, RIGHT, 4), "play_move RIGHT true");
+  result = result && test_equality_bool(false, play_move(g, 1, RIGHT, 1), "play_move RIGHT false");
+  result = result && test_equality_bool(true, play_move(g, 0, UP, 2), "play_move UP true");
+  result = result && test_equality_bool(false, play_move(g, 0, UP, 1), "play_move UP false");
+  result = result && test_equality_bool(true, play_move(g, 0, DOWN, 3), "play_move DOWN true");
+  result = result && test_equality_bool(false, play_move(g, 0, DOWN, 1), "play_move DOWN false");
+  play_move(g, 0, RIGHT, 1);
+  result = result && test_equality_bool(true, game_over_hr(g), "play_move game_over_hr true");
+  result = result && test_equality_bool(false, play_move(g, 3, LEFT, 1), "play_move_x !can_move_x LEFT");
+  result = result && test_equality_bool(false, play_move(g, 3, RIGHT, 1), "play_move_x !can_move_x RIGHT");
+  result = result && test_equality_bool(false, play_move(g, 2, UP, 1), "play_move !can_move_y UP");
+  result = result && test_equality_bool(false, play_move(g, 2, DOWN, 1), "play_move !can_move_y DOWN");
+  result = result && test_equality_bool(false, play_move(g, 4, DOWN, 4), "play_move DOWN intersect");
   delete_game(g);
-  return result; 
-  }
+  tear_down_Bis();
+  return result;
+}
 
 
 
 int main (int argc, char *argv[]){
   bool result = true;
 
-  result = result && test_equality_bool(true, test_new_game_rh(), "new_game_rh");
+  result = result && test_equality_bool(true, test_play_move(), "play_move");
 
   if (result) {
     printf("Youpi !\n");
