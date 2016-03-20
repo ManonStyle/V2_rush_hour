@@ -233,7 +233,7 @@ int take_piece_num(game g, char* buf, int* piece_num){
     if(strcmp(buf, "restart") == 10)
       return -2;
     if(buf[0]<48 || buf[0]>=48+game_nb_pieces(g) || buf[1] != 10)
-      printf("Write a number between 0 and %dt\tor write cancel or exit.\n",game_nb_pieces(g)-1);
+      printf("Write a number between 0 and %d\tor write cancel, restart or exit.\n",game_nb_pieces(g)-1);
     else{
       *(piece_num) = atoi(buf);
       if(!can_move(g,*(piece_num)))
@@ -326,7 +326,7 @@ int take_direction(game g, int piece_num, char* buf, dir* d){
       return -2;
     int option_num = is_dir_option(buf);
     if(option_num == -1)
-      printf("Write one of those direction: up, down, right, left\tor write cancel or exit.\n");
+      printf("Write one of those direction: up, down, right, left\tor write cancel, restart or exit.\n");
     else{
       *(d) = direction[option_num].option;
       if(is_good_direction(g, piece_num, *(d)))
@@ -351,13 +351,13 @@ int take_number_case(game g, int piece_num, dir d, char* buf, int* distance){
       return -2;
     if(d == RIGHT || d == LEFT){
       if(buf[0]<48 || buf[0]>=48+game_width(g) || buf[1] != 10){
-	printf("Write a number between 0 and %d\tor write cancel or exit.\n",game_width(g));
+	printf("Write a number between 0 and %d\tor write cancel, restart or exit.\n",game_width(g));
 	good = false;
       }
     }
     else{
       if(buf[0]<48 || buf[0]>=48+game_height(g) || buf[1] != 10){
-	printf("Write a number between 0 and %d\tor write cancel or exit.\n",game_height(g));
+	printf("Write a number between 0 and %d\tor write cancel, restart or exit.\n",game_height(g));
 	good = false;
       }
     }
