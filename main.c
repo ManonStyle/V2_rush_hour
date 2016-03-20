@@ -39,6 +39,7 @@ void print_line_empty(game g, int y, bool i){
     else
       printf("|      ");
   }
+  // p is the gost piece for indicate the current exit.
   cpiece p = game_piece(g, game_nb_pieces(g));
   if(y >= get_y(p) && y < get_y(p) +get_height(p)){
     if(y == get_y(p) || y == get_y(p)+get_height(p)-1){
@@ -75,6 +76,7 @@ void print_line(game g, int y){
     else
       printf("|      ");
   }
+  // p is the gost piece for indicate the current exit.
   cpiece p = game_piece(g, game_nb_pieces(g));
   if(y >= get_y(p) && y < get_y(p)+get_height(p)){
     printf(" exit \n");
@@ -106,6 +108,7 @@ void print_line_end(game g, int y){
     else
       printf("-------");
   }
+  // p is the gost piece for indicate the current exit.
   cpiece p = game_piece(g, game_nb_pieces(g));
   if(y > get_y(p) && y < get_y(p)+get_height(p)){
     printf(" exit\n");
@@ -181,7 +184,7 @@ game init_game(int level, char* file){
 }
 
 
-
+//Use the gost piece for reference the current exit
 bool can_move(game g, int piece_num){
   cpiece p = game_piece(g, piece_num);
   int x = get_x(p);
@@ -374,6 +377,7 @@ int take_number_case(game g, int piece_num, dir d, char* buf, int* distance){
 
 void usage(char* str){
   fprintf(stderr, "Usage: %s -game <int level>\n", str);
+  fprintf(stderr, "game option:\n-rh: rush hour\n-ar: ane rouge\n");
   return exit(EXIT_FAILURE);
 }
 
