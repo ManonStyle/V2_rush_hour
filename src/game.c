@@ -13,6 +13,7 @@ struct game_s{
 };
 
 
+//last piece: pieces[nb_pieces] is a gost piece for indicate the exit, total pieces is n_pieces + 1
 game new_game_hr (int nb_pieces, piece *pieces){
   game g = (game)malloc(sizeof(struct game_s));
   g->width = 6;
@@ -38,6 +39,8 @@ void delete_game (game g){
   free(g);
 }
 
+
+//also copy the gost piece
 void copy_game (cgame src, game dst){
   dst->width = src->width;
   dst->height = src->height;
@@ -50,10 +53,12 @@ void copy_game (cgame src, game dst){
   }
 }
 
+//return the number of piece without the gost piece
 int game_nb_pieces(cgame g){
   return g->nb_pieces;
 }
 
+//Doesn't include the gost piece
 cpiece game_piece(cgame g, int piece_num){
   if(piece_num > g->nb_pieces){
     fprintf(stderr, "index is out of range\n");
@@ -63,11 +68,13 @@ cpiece game_piece(cgame g, int piece_num){
 }
 
 
+//Use the gost piece for knowing the exit 
 bool game_over_hr (cgame g){
   return get_x(g->pieces[0]) == get_x(g->pieces[g->nb_pieces]) && get_y(g->pieces[0]) == get_y(g->pieces[g->nb_pieces]);
 }
 
 
+//Doesn't include the gost piece. You can move above the gost piece
 bool play_move(game g, int piece_num, dir d, int distance){
   piece p = g->pieces[piece_num];
   if(!can_move_y(p)){
@@ -121,6 +128,7 @@ int game_nb_moves(cgame g){
 }
 
 
+//last piece: pieces[nb_pieces] is a gost piece for indicate the exit, total pieces is n_pieces + 1
 game new_game (int width, int height, int nb_pieces, piece *pieces){
   game g = (game)malloc(sizeof(struct game_s));
   g->width = width;
@@ -148,6 +156,7 @@ int game_height(cgame g){
 }
 
 
+//Doesn't include the gost piece for the test.
 int game_square_piece (game g, int x, int y){
   int px, py, pw, ph;
   for (int piece_num= 0; piece_num<g->nb_pieces; ++piece_num) {
