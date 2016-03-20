@@ -7,9 +7,9 @@ install(TARGETS game ARCHIVE DESTINATION ${RHARGAME_BINARY_DIR}/lib)
 
 install(FILES piece.h game.h DESTINATION ${RHARGAME_BINARY_DIR}/include)
 
-add_executable(rush_hour-ane_rouge-game main.c)
-target_link_libraries(rush_hour-ane_rouge-game game)
-install(TARGETS rush_hour-ane_rouge-game RUNTIME DESTINATION ${RHARGAME_BINARY_DIR}/bin)
+add_executable(jeu main.c)
+target_link_libraries(jeu game)
+install(TARGETS jeu RUNTIME DESTINATION ${RHARGAME_BINARY_DIR}/bin)
 
 
 # cmake test-piece
