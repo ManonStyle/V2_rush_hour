@@ -13,52 +13,73 @@ struct game_s{
 };
 
 
-//last piece: pieces[nb_pieces] is a gost piece for indicate the exit, total pieces is n_pieces + 1
-game new_game_hr (int nb_pieces, piece *pieces){
+game new_game (int width, int height, int nb_pieces, piece *pieces){
   game g = (game)malloc(sizeof(struct game_s));
-  g->width = 6;
-  g->height = 6;
+  g->width = width;
+  g->height = height;
   g->nb_pieces = nb_pieces;
   g->nb_moves = 0;
-  g->pieces = (piece*)malloc((nb_pieces+1)*sizeof(piece));
+  g->pieces = (piece*)malloc((nb_pieces)*sizeof(piece));
   if (g == NULL){
     fprintf(stderr, "Allocation problem");
-    exit(EXIT_FAILURE);
+    return NULL;
   }
-  for(int i=0; i<=nb_pieces; ++i){
+  for(int i=0; i<nb_pieces; ++i){
     g->pieces[i] = new_piece_rh(0, 0, true, true);
     copy_piece(pieces[i], g->pieces[i]);
   }
   return g;
 }
 
+
+game new_game_hr (int nb_pieces, piece *pieces){
+  int width = 6;
+  int height = 6;
+  return new_game (width, height, nb_pieces, pieces);
+}
+
+
 void delete_game (game g){
-  for(int i=0; i<=g->nb_pieces; ++i)
+  for(int i=0; i<g->nb_pieces; ++i)
     delete_piece(g->pieces[i]);
   free(g->pieces);
   free(g);
 }
 
 
-//also copy the gost piece
 void copy_game (cgame src, game dst){
   dst->width = src->width;
   dst->height = src->height;
   dst->nb_pieces = src->nb_pieces;
   dst->nb_moves = src->nb_moves;
-  for(int i=0; i<=src->nb_pieces; ++i){
+  for(int i=0; i<src->nb_pieces; ++i){
     if(dst->pieces[i] == NULL)
       dst->pieces[i] = new_piece_rh(0, 0, true, true);
     copy_piece(src->pieces[i], dst->pieces[i]);
   }
 }
 
-//return the number of piece without the gost piece
+
 int game_nb_pieces(cgame g){
   return g->nb_pieces;
 }
 
-//Doesn't include the gost piece
+
+int game_nb_moves(cgame g){
+  return g->nb_moves;
+}
+
+
+int game_width(cgame g){
+  return g->width;
+}
+
+
+int game_height(cgame g){
+  return g->height;
+}
+
+
 cpiece game_piece(cgame g, int piece_num){
   if(piece_num > g->nb_pieces){
     fprintf(stderr, "index is out of range\n");
@@ -68,13 +89,11 @@ cpiece game_piece(cgame g, int piece_num){
 }
 
 
-//Use the gost piece for knowing the exit 
 bool game_over_hr (cgame g){
-  return get_x(g->pieces[0]) == get_x(g->pieces[g->nb_pieces]) && get_y(g->pieces[0]) == get_y(g->pieces[g->nb_pieces]);
+  return get_x(g->pieces[0]) == 4 && get_y(g->pieces[0]) == 3;
 }
 
 
-//Doesn't include the gost piece. You can move above the gost piece
 bool play_move(game g, int piece_num, dir d, int distance){
   piece p = g->pieces[piece_num];
   if(!can_move_y(p)){
@@ -123,40 +142,6 @@ bool play_move(game g, int piece_num, dir d, int distance){
 }
 
 
-int game_nb_moves(cgame g){
-  return g->nb_moves;
-}
-
-
-//last piece: pieces[nb_pieces] is a gost piece for indicate the exit, total pieces is n_pieces + 1
-game new_game (int width, int height, int nb_pieces, piece *pieces){
-  game g = (game)malloc(sizeof(struct game_s));
-  g->width = width;
-  g->height = height;
-  g->nb_pieces = nb_pieces;
-  g->nb_moves = 0;
-  g->pieces = (piece*)malloc((nb_pieces+1)*sizeof(piece));
-  if (g == NULL){
-    fprintf(stderr, "Allocation problem");
-    exit(EXIT_FAILURE);
-  }
-  for(int i=0; i<=nb_pieces; ++i){
-    g->pieces[i] = new_piece_rh(0, 0, true, true);
-    copy_piece(pieces[i], g->pieces[i]);
-  }
-  return g;
-}
-
-int game_width(cgame g){
-  return g->width;
-}
-
-int game_height(cgame g){
-  return g->height;
-}
-
-
-//Doesn't include the gost piece for the test.
 int game_square_piece (game g, int x, int y){
   int px, py, pw, ph;
   for (int piece_num= 0; piece_num<g->nb_pieces; ++piece_num) {
