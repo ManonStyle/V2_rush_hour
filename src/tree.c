@@ -4,13 +4,14 @@
 #include "tree.h"
 
 struct tree_s{
+  int nb_moves;
   int* int_game;
   tree father;
   tree brother;
   tree son;
 };
 
-tree new_tree(int* int_game, int nb_pieces){
+tree new_tree(int* int_game, int nb_pieces, int nb_moves){
   tree new_tree = (tree)malloc(sizeof(struct tree_s));
   if(new_tree == NULL)
     return NULL;
@@ -22,6 +23,7 @@ tree new_tree(int* int_game, int nb_pieces){
   new_tree->father = NULL;
   new_tree->brother = NULL;
   new_tree->son = NULL;
+  new_tree->nb_moves = nb_moves;
   return new_tree;
 }
 
@@ -30,8 +32,8 @@ void delete_tree(tree t){
   free(t);
 }
 
-void add_son(tree t, int* int_game, int nb_pieces){
-  tree tmp = new_tree(int_game, nb_pieces);
+void add_son(tree t, int* int_game, int nb_pieces, int nb_moves){
+  tree tmp = new_tree(int_game, nb_pieces, nb_moves);
   tmp->father = t;
   tmp->brother = t->son;
   t->son = tmp;
@@ -61,4 +63,8 @@ tree get_brother(tree t){
 
 tree get_son(tree t){
   return t->son;
+}
+
+int get_nb_moves(tree t){
+  return t->nb_moves;
 }
