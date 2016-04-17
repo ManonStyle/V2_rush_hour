@@ -1,64 +1,74 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
-#include "tree.h"
-#include "game.h"
 #include "file.h"
 
-struct cell_tree_s{
-  tree_game data;
-  cell_tree next;
+
+typedef struct cell_s* cell;
+
+struct cell_s{
+  tree t;
+  cell next;
 };
 
-cell_tree new_cell_tree(tree_game data, cell_tree next){
-  cell_tree new_cell = (cell_tree)malloc(sizeof(struct cell_tree_s));
-  new_cell->data = data;
+cell new_cell_tree(tree t, cell next){
+  cell new_cell = (cell)malloc(sizeof(struct cell_s));
+  new_cell->t = t;
   new_cell->next = next;
   return new_cell;
 }
 
-void delete_cell_tree(cell_tree cell){
-  free(cell);
+cell delete_cell_tree(cell c){
+  cell tmp = c->next;
+  free(c);
+  return tmp;
 }
 
-struct file_tree_s{
-  cell_tree first;
-  cell_tree last;
+
+
+struct file_s{
+  cell first;
+  cell last;
 };
 
-file_tree new_file_tree(){
-  file_tree new_file = (file_tree)malloc(sizeof(struct file_tree_s));
+file new_file(){
+  file new_file = (file)malloc(sizeof(struct file_s));
+  new_file->first = NULL;
+  new_file->last = NULL;
   return new_file;
 }
 
-void push_file_tree(file_tree file, tree_game data){
-  cell_tree last = new_cell_tree(data, NULL);
-  if(file->last == NULL){
-    file->first = last;
-    file->last = last;
+void push(file f, tree t){
+  cell tmp = new_cell_tree(t, NULL);
+  if(f->last == NULL){
+    f->first = tmp;
+    f->last = tmp;
   }
   else{
-    (file->last)->next = last;
-    file->last = last;
+    (f->last)->next = tmp;
+    f->last = tmp;
   }
 }
 
-tree_game pop_file_tree(file_tree file){
-  if(file->first == NULL)
+tree pop(file f){
+  if(f->first == NULL)
     return NULL;
-  cell_tree cell = file->first;
-  tree_game tree = cell->data;
-  file->first = cell->next;
-  delete_cell_tree(cell);
-  if(file->first == NULL)
-    file->last = NULL;
-  return tree;
+  cell tmp_cell = f->first;
+  f->first = tmp_cell->next;
+  if(f->first == NULL)
+    f->last = NULL;
+  tree tmp_tree = tmp_cell->t;
+  delete_cell_tree(tmp_cell);
+  return tmp_tree;
 }
 
-void clear_file_tree(file_tree file){
-  tree_game tmp_tree = NULL;
-  while(tmp_tree != NULL)
-    tmp_tree = pop_file_tree(file);
-  free(file);
+bool is_empty(file f){
+  return f->first == NULL;
 }
 
+void delete_file(file f){
+  while(pop(f) != NULL){}
+  free(f);
+}
+  
