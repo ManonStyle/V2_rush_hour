@@ -9,51 +9,49 @@
 #include "game.h"
 #include "piece.h"
 
+struct game_option_s{
+  char name[4];
+  char file[30];
+};
 
-game init_game(char* file_name){
-  FILE* f = fopen(file_name, "r");
+
+typedef struct game_option_s game_option;
+game_option game_chose[] = {{"-rh", "game_rh.txt"},{"-ar", "game_ar.txt"}};
+
+
+game init_game(int level, int game_i){
+  FILE* f = fopen(game_chose[game_i].file, "r");
   if(f == NULL)
     exit(EXIT_FAILURE);
-  char tmp[20]; 
-  if(!fgets(tmp, 20, f)){
-    fprintf(stderr, "Problem for read the file: %s\n", file_name);
-    exit(EXIT_FAILURE);
+  char tmp[100]; 
+  for(int i=0; i<level; ++i){
+    if(!fgets(tmp, 100, f)){
+      fprintf(stderr, "There is no level %d\n", level);
+      exit(EXIT_FAILURE);
+    }
   }
-  const char limit[2] = " ";
+  const char limit[2] = ".";
   char* splited = strtok(tmp, limit);
   int g_width = atoi(splited);
   splited = strtok(NULL, limit);
   int g_height = atoi(splited);
-  if(!fgets(tmp, 20, f)){
-    fprintf(stderr, "Problem for read the file: %s\n", file_name);
-    exit(EXIT_FAILURE);
-  }
-  splited = strtok(tmp, limit);
+  splited = strtok(NULL, limit);
   int nb_pieces = atoi(splited);
   piece pieces[nb_pieces];
   char value[1];
   for(int i=0; i<nb_pieces; ++i){
-    if(!fgets(tmp, 20, f)){
-      fprintf(stderr, "Problem for read the file: %s\n", file_name);
-      exit(EXIT_FAILURE);
-    }
-    splited = strtok(tmp, limit);
+    splited = strtok(NULL, limit);
     value[0] = splited[0];
     int x = atoi(value);
-    splited = strtok(NULL, limit);
-    value[0] = splited[0];
+    value[0] = splited[1];
     int y = atoi(value);
-    splited = strtok(NULL, limit);
-    value[0] = splited[0];
+    value[0] = splited[2];
     int width = atoi(value);
-    splited = strtok(NULL, limit);
-    value[0] = splited[0];
+    value[0] = splited[3];
     int height = atoi(value);
-    splited = strtok(NULL, limit);
-    value[0] = splited[0];
+    value[0] = splited[4];
     bool move_x = atoi(value);
-    splited = strtok(NULL, limit);
-    value[0] = splited[0];
+    value[0] = splited[5];
     bool move_y = atoi(value);
     pieces[i] = new_piece(x, y, width, height, move_x, move_y);
     if(pieces[i] == NULL)
@@ -79,7 +77,8 @@ bool game_over(cgame g, int game_i){
 
 
 void usage(char* str){
-  fprintf(stderr, "Usage: %s <a|r> <filename>\n", str);
+  fprintf(stderr, "Usage: %s -game <int level>\n", str);
+  fprintf(stderr, "game option:\n-rh: rush hour\n-ar: ane rouge\n");
   return exit(EXIT_FAILURE);
 }
 
@@ -107,12 +106,44 @@ game int_to_game(cgame g, int* int_game){
   return new_g;
 }
 
-void path_to_win(tree t){
+void resize_array(int* array, int size){
+  array = (int*)realloc(array, size*sizeof(int)*2);
+  if(array == NULL){
+    fprintf(stderr,"Not enough memory!\n");
+    exit(EXIT_FAILURE);
+  }
+}
+
+
+void path_to_win(tree t, int nb_pieces){
   if(t == NULL){
-    printf("-1\n");
+    printf("There is no solution. The game is impossible\n");
     return;
   }
-  printf("%d\n", get_nb_moves(t));
+  int* move = (int*)malloc(sizeof(int)*100);
+  int size = 0;
+  int max_size = 100;
+  tree tmp = t;
+  while(get_father(tmp) != NULL){
+    tree tmp_father = get_father(tmp);
+    int* int_game_son = get_int_game(tmp);
+    int* int_game_father = get_int_game(tmp_father);
+    for(int i=0; i<nb_pieces; ++i){
+      if(int_game_son[i] != int_game_father[i]){
+	if(max_size == size)
+	  resize_array(move, size);
+	move[size] = int_game_son[i];
+	size++;
+	break;
+      }
+    }
+    tmp = tmp_father;
+  }
+  printf("Path to win in %d moves:\n", size);
+  for(int i=size-1; i>=0; --i)
+    printf("%d in (%d,%d); ", move[i]/10000, (move[i]/100)%100, move[i]%100);
+  printf("\n");
+  free(move);
 }
   
 
@@ -126,7 +157,7 @@ tree test_soluce(cgame g, int game_i, hash save_move, file f,
 	int int_game[nb_pieces];
 	game_to_int(tmp, int_game);
 	if(!in_hash(save_move, int_game, nb_pieces)){
-	  add_son(t, int_game, nb_pieces, get_nb_moves(t)+n);
+	  add_son(t, int_game, nb_pieces);
 	  tree t_son = get_son(t);
 	  add_hash(save_move, get_int_game(t_son), nb_pieces);
 	  push(f, t_son);
@@ -158,7 +189,7 @@ void solve_game(cgame g, int game_i){
   int nb_pieces = game_nb_pieces(g);
   int int_game[nb_pieces];
   game_to_int(g, int_game);
-  tree tree_analyse = new_tree(int_game, nb_pieces, 0);
+  tree tree_analyse = new_tree(int_game, nb_pieces);
   file f =  new_file();
   push(f, tree_analyse);
   hash save_move = new_hash();
@@ -168,19 +199,19 @@ void solve_game(cgame g, int game_i){
     for(int i=0; i<nb_pieces; ++i){
       tree test = test_soluce(g, game_i, save_move, f, tmp, i, 0, height);
       if(test != NULL){
-	path_to_win(test);
+	path_to_win(test, nb_pieces);
 	delete_all(save_move, tree_analyse, f);
 	return;
       }
       test = test_soluce(g, game_i, save_move, f, tmp, i, 1, width);
       if(test != NULL){
-	path_to_win(test);
+	path_to_win(test, nb_pieces);
 	delete_all(save_move, tree_analyse, f);
 	return;
       }
     }
   }
-  path_to_win(NULL);
+  path_to_win(NULL, 0);
   delete_all(save_move, tree_analyse, f);
 }
 
@@ -188,18 +219,21 @@ int main(int argc, char* argv[]){
   if(argc != 3)
     usage(argv[0]);
   int game_i = -1;
-  if(strcmp(argv[1], "r") == 0)
-    game_i = 0;
-  else if(strcmp(argv[1], "a") == 0)
-    game_i = 1;
-  else
-     game_i = -1;
+  for(int i=0; i<2; ++i){
+    if(strcmp(argv[1], game_chose[i].name) == 0){
+      game_i = i;
+      break;
+    }
+  }
   if(game_i == -1)
     usage(argv[0]);
-  game g = init_game(argv[2]);
+  int level = atoi(argv[2]);
+  if(level <= 0)
+    usage(argv[0]);
+  game g = init_game(level, game_i);
   if(!game_over(g, game_i))
     solve_game(g, game_i);
   else
-    printf("0\n");
+    printf("The game is terminate whithout moving\n");
   return EXIT_SUCCESS;
 }
