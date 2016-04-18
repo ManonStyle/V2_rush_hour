@@ -12,7 +12,7 @@ install(TARGETS jeu RUNTIME DESTINATION ${RHARGAME_BINARY_DIR}/bin)
 
 # cmake solveur
 
-add_executable(solveur solveur/solveur.c solveur/file.c solveur/tree.c solveur/hash.c game.c piece.c)
+add_executable(solveur-concour solveur/solveur.c solveur/file.c solveur/tree.c solveur/hash.c game.c piece.c)
 
 
 # cmake test-piece
