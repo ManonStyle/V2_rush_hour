@@ -1,0 +1,136 @@
+%classe du document
+\documentclass{report}
+
+%importation des packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{listings}
+\usepackage{layout}
+\usepackage[top = 4.5cm, bottom = 4.5cm, right = 3.5cm, left = 3.5cm]{geometry}
+
+%initialisation de la page de garde
+\title{Projet de Programmation :\\ \bsc{rush hour} / \bsc{âne rouge}}
+\author{IN400A1 - \bsc{Groupe 6}\\Aliénor \bsc{brabant}\\Abdoul \bsc{diallo}\\Gérard \bsc{lézé}\\{Manon \bsc{philippot}}}
+\date{20 Avril 2016}
+
+%configuration de la citation de code
+\lstset{
+language = C,
+basicstyle = \scriptsize,
+numbers = left,
+numberstyle = \scriptsize,
+numbersep = 7pt,
+}
+
+%début du rapport
+\begin{document}
+
+%page de garde et table des matières
+\maketitle
+\tableofcontents
+
+%Introduction
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+
+%P1
+\part{Le projet}
+
+%P1C1
+\chapter{Que fait le projet ?}
+
+%P1C2
+\chapter{Description des fonctions implémentées}
+\section{Fichier piece.c}
+\section{Fichier game.c}
+\section{Fichier main.c}
+
+%P1C3
+\chapter{Description des tests mis en place}
+
+\section{Principe d'évalutation paresseuse}
+\label{Lexa}
+L'intégralité des tests effectués dans le cadre de ce projet repose sur le principe d'évaluation paresseuse. Le principe d'évaluation paresseuse consiste à procéder au calcul de la fonction en ne réalisant l'évaluation des arguments qu'au moment où ils sont effectivement utilisés. Cela a plusieurs buts : l'optimisation (éviter de calculer un résultat qui pourrait ne pas etre utilisé) et la maintenabilité (exprimer des structures de données infinies). Cependant ce mode d'évaluation présente un inconvénient : la lenteur d'exécution, bien que les concepteurs de compilateurs de langages à évaluation paresseuse apportent des solutions à ce problème.
+
+\section{Fonctionnement général}
+\label{Clarke}
+Chaque fichier de test est composé d'une fonction \emph{main} exécutée au lancement de l'exécutable du test, comme celle-ci :
+\begin{lstlisting}
+int main (int argc, char *argv[])
+{
+  bool result= true;
+
+  result = result && test_equality_bool(true, test1(), "test1");
+  result = result && test_equality_bool(true, test2(), "test2");
+  result = result && test_equality_bool(true, test3(), "test3");
+  result = result && test_equality_bool(true, test4(), "test4");
+  result = result && test_equality_bool(true, test5(), "test5");
+
+  if (result) {
+    printf("Youpi !\n");
+    return EXIT_SUCCESS;
+  }
+  else
+    return EXIT_FAILURE;
+}
+\end{lstlisting}
+
+Cette fonction principale possède une variale booléenne \emph{résult} initialisée à \emph{true} susceptible de changer de valeur au cours du déroulement des tests unitaires. Le code des lignes 5 à 9 est un exemple de évaluation paresseuse. Si \emph{result} vaut \emph{true}, alors le test unitaire de l'expression booléenne est exécuté et \emph{result} prend la valeur de sa valeur booléenne de retour. Si \emph{result} vaut \emph{false}, alors le test unitaire de l'expression booléenne n'a pas besoin d'être exécuté, puisque l'on sait déjà que le résultat de l'expression booléenne sera \emph{false}, et \emph{result} prend la valeur \emph{false}. Ainsi, le premier test est toujours exécuté, et si l'un des tests unitaires vaut \emph{false}, alors, plus aucun test unitaire ne sera exécuté par la suite puisque par évaluation paresseuse \emph{result} prendra toujours la valeur \emph{false} sans arriver à l'appel du test unitaire. Lorsque tous les tests sont passés, si \emph{result} vaut \emph{true} alors cela signifie que tous les tests se sont bien passés (affichage d'un message ``Youpi !''), sinon cela signifie que l'un des tests a échoué (affichage d'un message d'erreur personnalisé).
+
+\section{Fichier test\_piece.c}
+L'intégralité des fonctions du fichier source piece.c sont testées à l'intérieur des tests unitaires \emph{test\_new\_piece\_rh}, \emph{test\_new\_piece}, \emph{test\_copy\_piece}, \emph{test\_intersect} et \emph{test\_move\_piece} du fichier source test\_piece.c. Toutes ces fonctions reposent sur les mêmes principe que ceux vus aux section \ref{Lexa} et \ref{Clarke} (évaluation paresseuse et utilisation de la variable booléenne \emph{result}).
+\subsection{test\_new\_piece\_rh}
+Cette fonction permet de tester le bon déroulement de la création d'une pièce de Rush Hour, quelque soit sa taille (\emph{small}, \emph{!small}) et son orientation (\emph{horizontal}, \emph{!horizontal}), et pour des coordonnées \emph{x} et \emph{y} variées. Il s'agit de vérifier que la nouvelle pièce crée possède bien les caractéristiques voulues (coordonnées, taille, orientation). Si les caractéristiques ne sont pas égales à celles voulues, alors la fonction \emph{new\_piece\_rh} est considérée comme incorrecte. La fonction \emph{new\_piece\_rh} est testée par l'intermédiaire des fonctions  \emph{get\_x}, \emph{get\_y}, \emph{get\_height}, \emph{get\_width}, \emph{can\_move\_x} et \emph{can\_move\_y}. Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_piece} pour éviter des fuites mémoires.
+\subsection{test\_new\_piece}
+Cette fonction permet de tester le bon déroulement de la création d'une pièce quelconque, quelque soit sa taille (\emph{width}, \emph{height}) et ses capacités de mouvement (\emph{move\_x}, \emph{move\_y}), et pour des coordonnées \emph{x} et \emph{y} variées. Il s'agit de vérifier que la nouvelle pièce crée possède bien les caractéristiques voulues (coordonnées, taille, orientation). Si les caractéristiques ne sont pas égales à celles voulues, alors la fonction \emph{new\_piece} est considérée comme incorrecte. La fonction \emph{new\_piece} est testée par l'intermédiarie des fonctions \emph{get\_x}, \emph{get\_y}, \emph{get\_width}, \emph{get\_height}, \emph{can\_move\_x} et \emph{can\_move\_y}. Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_piece} pour éviter des fuites mémoires.
+\subsection{test\_copy\_piece}
+Cette fonction permet de tester le bon déroulement de la copie d'une pièce, pour un nombre de pièces varié. Il s'agit de vérifier que toutes les caractéristiques de la pièce copiée sont identiques aux caractéristiques de la pièce originale (coordonnées, taille, orientation). Si les caractéristiques ne sont pas identiques, alors la fonction \emph{copy\_piece} est considérée comme incorrecte. La fonction \emph{copy\_piece} est testée par l'intermédiaire des fonctions \emph{get\_x}, \emph{get\_y}, \emph{get\_width}, \emph{get\_height}, \emph{can\_move\_x} et \emph{can\_move\_y}. Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_piece} pour éviter des fuites mémoires.
+\subsection{test\_intersect}
+Cette fonction permet de tester si la fonction \emph{intersect}, qui détermine si deux pièces s'intersectent, est correcte. Il s'agit de tester la fonction \emph{intersect} pour des pièces dont on sait qu'elles s'intersectent et pour des pièces dont on sait qu'elles ne s'intersectent pas, afin de traiter tous les cas possibles. Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_piece} pour éviter des fuites mémoires.
+\subsection{test\_move\_piece}
+Cette fonction permet de tester si un mouvement s'est bien effectué, pour un set de pièce variées initialisé préalablement et des distances variées. Il s'agit de comparer après le mouvement d'une pièce ses coordonnées attendues avec ses coordonnées réelles. Si les coordonnées ne sont pas les mêmes, alors la fonction \emph{move\_piece} est considérée comme incorrecte. La fonction \emph{move\_piece} est testée par l'intermédiaire des fonctions \emph{copy\_piece}, \emph{can\_move\_x}, \emph{can\_move\_y}, \emph{get\_x} et \emph{get\_y}. Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_piece} pour éviter des fuites mémoires.
+
+\section{Fichier test\_game.c}
+L'intégralité des fonctions du fichier source game.c sont testées à l'interieur des tests unitaires \emph{test\_new\_game\_rh}, \emph{test\_new\_game}, \emph{test\_copy\_game}, \emph{test\_play\_move}, \emph{test\_game\_square\_piece} et \emph{test\_game\_over\_hr}. du fichier source test\_game.c. Toutes ces fonctions reposent sur les mêmes principse que ceux vus aux section \ref{Lexa} et \ref{Clarke} (évaluation paresseuse et utilisation de la variable booléenne \emph{result}).
+\subsection{test\_new\_game\_rh}
+Cette fonction permet de tester le bon déroulement de la création d'un jeu de Rush Hour. Il s'agit de vérifier que le nouveau jeu de Rush Hour crée possède bien les caractéristiques voulues (taille plateau, nombre de pièces, nombre de mouvements, pièces). Si les caractéristiques ne sont pas égales à celles voulues, alors la fonction \emph{new\_game\_hr} est considérée comme incorrecte. La fonction \emph{new\_game\_hr} est testée par l'intermédiaire des fonctions \emph{game\_width}, \emph{game\_height}, \emph{game\_nb\_pieces}, \emph{game\_nb\_moves}, \emph{get\_x}, \emph{get\_y}, \emph{get\_height}, \emph{get\_width}, \emph{can\_move\_x} et \emph{can\_move\_y}. Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_game} pour éviter des fuites mémoires.
+\subsection{test\_new\_game}
+Cette fonction permet de tester le bon déroulement de la création d'un jeu quelconque. Il s'agit de vérifier que le nouveau jeu crée possède bien les caractéristiques voulues (taille plateau, nombre de pièces, nombre de mouvements, pièces). Si les caractéristiques ne sont pas égales à celles voulues, alors la fonction \emph{new\_game} est considérée comme incorrecte. La fonction \emph{new\_game} est testée par l'intermédiaire des fonctions \emph{game\_width}, \emph{game\_height}, \emph{game\_nb\_pieces}, \emph{game\_nb\_moves}, \emph{get\_x}, \emph{get\_y}, \emph{get\_height}, \emph{get\_width}, \emph{can\_move\_x} et \emph{can\_move\_y}. Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_game} pour éviter des fuites mémoires.
+\subsection{test\_copy\_game}
+Cette fonction permet de tester le bon déroulement de la copie d'un jeu. Il s'agit de vérifier que toutes les caractéristiques du jeu copié sont identiques aux caractéristiques du jeu original (taille plateau, nombre de pièces, nombre de mouvements, pièces). Si les caractéristiques ne sont pas identiques, alors la fonction \emph{copy\_game} est considérée comme incorrecte. La fonction \emph{copy\_game} est testée par l'intermédiaire des fonctions \emph{game\_width}, \emph{game\_height}, \emph{game\_nb\_pieces}, \emph{game\_nb\_moves}, \emph{get\_x}, \emph{get\_y}, \emph{get\_height}, \emph{get\_width}, \emph{can\_move\_x} et \emph{can\_move\_y}. Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_game} pour éviter des fuites mémoires.
+\subsection{test\_play\_move}
+Cette fonction permet de tester si la fonction \emph{play\_move}, qui permet de faire un mouvement de pièce dans le jeu, est correcte. Elle consiste à effectuer tous les types de mouvements possible avec la fonction \emph{play\_move} et à comparer sa valeur de retour avec la valeur attendue. Si pour au moins un des cas les deux valeurs ne sont pas égales, alors la fonction \emph{play\_move} est considérée comme incorrecte. Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_game} pour éviter des fuites mémoires.
+\subsection{test\_game\_square\_piece}
+Cette fonction permet de tester si la fonction \emph{game\_square\_piece}, qui donne le numéro de la pièce occupant la case localisée par les  paramètres \emph{x} et \emph{y}, est correcte. Un plateau de jeu est matérialisé par un tableau à deux dimensions : chaque case vide est représentée par la valeur -1, et chaque case occupée par une pièce est représentée par le numéro de la pièce en question. Le teste de la fonction \emph{game\_square\_piece} consiste à comparer la valeur de chaque case du tableau à la valeur de retour de la fonction \emph{game\_square\_piece}. Si pour au moins un des cas les deux valeurs ne sont pas égales, alors la fonction \emph{game\_square\_piece} est considérée comme incorrecte. Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_game} pour éviter des fuites mémoires.
+\subsection{test\_game\_over\_hr}
+Cette fonction permet de tester si la fonction \emph{test\_game\_over\_hr}, qui permet de déterminer si la pièce 0 est sortie, est correcte. Elle consiste à appeler la fonction \emph{test\_game\_over\_hr} lorsque la pièce 0 n'est pas sortie, et lorsqu'elle est sortie, et de comparer la valeur de retour de la fonction à la valeur attendue. Si pour au moins un des cas les deux valeurs ne sont pas égales, alors la fonction \emph{test\_game\_over\_hr} est considérée comme incorrecte.Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_game} pour éviter des fuites mémoires.
+
+%P1C4
+\chapter{Description du solveur}
+
+%P2
+\setcounter{chapter}{0}
+\part{Le travail}
+
+%P2C1
+\chapter{Organisation et répartition du travail}       %en temps
+
+%P2C2
+\chapter{Découpage de l'archive /  des modules}
+
+%P2C3
+\chapter{Analyse mémoire}
+
+%P2C4
+\chapter{Ce qui fonctionne et ne fonctionne pas. Pourquoi ?}
+
+%P2C5
+\chapter{Difficultés rencontrées}
+
+%P2C6
+\chapter*{Conclusion}
+\addcontentsline{toc}{chapter}{Conclusion}
+
+%fin du rapport
+\end{document}
