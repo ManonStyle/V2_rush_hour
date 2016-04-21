@@ -13,12 +13,26 @@ struct piece_s {
   bool move_y;
 };
 
+piece new_piece (int x, int y, int width, int height, bool move_x, bool move_y){
+  piece p = (piece)malloc(sizeof(struct piece_s));
+  if (p == NULL){
+    fprintf(stderr, "Allocation problem");
+    return NULL;
+  }
+  p->x = x;
+  p->y = y;
+  p->width= width;
+  p->height= height;
+  p->move_x = move_x;
+  p->move_y = move_y;
+  return p;
+}
 
 piece new_piece_rh(int x, int y, bool small, bool horizontal){
   piece p = (piece)malloc(sizeof(struct piece_s));
   if (p == NULL){
     fprintf(stderr, "Allocation problem");
-    exit(EXIT_FAILURE);
+    return NULL;
   }
   p->x = x;
   p->y = y;
@@ -136,22 +150,6 @@ bool can_move_x(cpiece p){
 
 bool can_move_y(cpiece p){
   return p->move_y;
-}
-
-
-piece new_piece (int x, int y, int width, int height, bool move_x, bool move_y){
-  piece p = (piece)malloc(sizeof(struct piece_s));
-  if (p == NULL){
-    fprintf(stderr, "Allocation problem");
-    exit(EXIT_FAILURE);
-  }
-  p->x = x;
-  p->y = y;
-  p->width= width;
-  p->height= height;
-  p->move_x = move_x;
-  p->move_y = move_y;
-  return p;
 }
 
 

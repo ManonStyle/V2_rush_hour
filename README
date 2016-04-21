@@ -13,9 +13,21 @@ compilation :
 execution du jeu : 
 	./jeu <choix du jeu, -rh ou -ar> <numero du niveau>
 
+execution du solveur :
+	./solveur <a|r> config<num de config>.txt
+
 execution des tests :
 	cd build
 	make check
 
 desinstallation :
 	make clean
+
+
+description des fichiers de configuration :
+
+	game_rh.txt : configuration des plateaux du rush-hour
+
+	game_ar.txt : configuration des plateaux de l'âne rouge
+
+	config<num de config>.txt : fichiers de configuration nécessaire au solveur 
