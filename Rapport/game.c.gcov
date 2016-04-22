@@ -1,0 +1,175 @@
+        -:    0:Source:game.c
+        -:    0:Graph:game.gcno
+        -:    0:Data:game.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdlib.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "game.h"
+        -:    4:
+        -:    5:
+        -:    6:
+        -:    7:struct game_s{
+        -:    8:  int width;
+        -:    9:  int height;
+        -:   10:  int nb_pieces;
+        -:   11:  int nb_moves;
+        -:   12:  piece *pieces;
+        -:   13:};
+        -:   14:
+        -:   15:
+        7:   16:game new_game (int width, int height, int nb_pieces, piece *pieces){
+        7:   17:  game g = (game)malloc(sizeof(struct game_s));
+        7:   18:  g->width = width;
+        7:   19:  g->height = height;
+        7:   20:  g->nb_pieces = nb_pieces;
+        7:   21:  g->nb_moves = 0;
+        7:   22:  g->pieces = (piece*)malloc((nb_pieces)*sizeof(piece));
+        7:   23:  if (g == NULL){
+    #####:   24:    fprintf(stderr, "Allocation problem");
+    #####:   25:    return NULL;
+        -:   26:  }
+       42:   27:  for(int i=0; i<nb_pieces; ++i){
+       35:   28:    g->pieces[i] = new_piece_rh(0, 0, true, true);
+       35:   29:    copy_piece(pieces[i], g->pieces[i]);
+        -:   30:  }
+        7:   31:  return g;
+        -:   32:}
+        -:   33:
+        -:   34:
+        2:   35:game new_game_hr (int nb_pieces, piece *pieces){
+        2:   36:  int width = 6;
+        2:   37:  int height = 6;
+        2:   38:  return new_game (width, height, nb_pieces, pieces);
+        -:   39:}
+        -:   40:
+        -:   41:
+        7:   42:void delete_game (game g){
+       42:   43:  for(int i=0; i<g->nb_pieces; ++i)
+       35:   44:    delete_piece(g->pieces[i]);
+        7:   45:  free(g->pieces);
+        7:   46:  free(g);
+        7:   47:}
+        -:   48:
+        -:   49:
+        1:   50:void copy_game (cgame src, game dst){
+        1:   51:  dst->width = src->width;
+        1:   52:  dst->height = src->height;
+        1:   53:  dst->nb_pieces = src->nb_pieces;
+        1:   54:  dst->nb_moves = src->nb_moves;
+        6:   55:  for(int i=0; i<src->nb_pieces; ++i){
+        5:   56:    if(dst->pieces[i] == NULL)
+    #####:   57:      dst->pieces[i] = new_piece_rh(0, 0, true, true);
+        5:   58:    copy_piece(src->pieces[i], dst->pieces[i]);
+        -:   59:  }
+        1:   60:}
+        -:   61:
+        -:   62:
+        4:   63:int game_nb_pieces(cgame g){
+        4:   64:  return g->nb_pieces;
+        -:   65:}
+        -:   66:
+        -:   67:
+        4:   68:int game_nb_moves(cgame g){
+        4:   69:  return g->nb_moves;
+        -:   70:}
+        -:   71:
+        -:   72:
+        7:   73:int game_width(cgame g){
+        7:   74:  return g->width;
+        -:   75:}
+        -:   76:
+        -:   77:
+        8:   78:int game_height(cgame g){
+        8:   79:  return g->height;
+        -:   80:}
+        -:   81:
+        -:   82:
+      120:   83:cpiece game_piece(cgame g, int piece_num){
+      120:   84:  if(piece_num > g->nb_pieces){
+    #####:   85:    fprintf(stderr, "index is out of range\n");
+    #####:   86:    return NULL;
+        -:   87:  }
+      120:   88:  return g->pieces[piece_num];
+        -:   89:}
+        -:   90:
+        -:   91:
+        2:   92:bool game_over_hr (cgame g){
+        2:   93:  return get_x(g->pieces[0]) == 4 && get_y(g->pieces[0]) == 3;
+        -:   94:}
+        -:   95:
+        -:   96:
+       18:   97:bool play_move(game g, int piece_num, dir d, int distance){
+       18:   98:  piece p = g->pieces[piece_num];
+       18:   99:  if(!can_move_y(p)){
+        4:  100:    if(d == UP || d == DOWN)
+        2:  101:      return false;
+        -:  102:  }
+       16:  103:  if(!can_move_x(p)){
+        5:  104:    if(d == RIGHT || d == LEFT)
+        2:  105:      return false;
+        -:  106:  }
+       14:  107:  if(d == RIGHT){
+        3:  108:    if(get_x(p)+get_width(p)+distance-1 >= game_width(g))
+        1:  109:      return false;
+       10:  110:    for(int i=0; i<distance; ++i){
+       16:  111:      for(int h=0; h<get_height(p); ++h){
+        8:  112:	if(game_square_piece(g, get_x(p)+get_width(p)+i, get_y(p)+h) != -1)
+    #####:  113:	  return false;
+        -:  114:      }
+        -:  115:    }
+        -:  116:  }
+       11:  117:  else if(d == LEFT){
+        3:  118:    if(get_x(p)-distance < 0)
+        1:  119:       return false;
+        9:  120:    for(int i=0; i<distance; ++i){
+       14:  121:      for(int h=0; h<get_height(p); ++h){
+        7:  122:	if(game_square_piece(g, get_x(p)-1-i, get_y(p)+h) != -1)
+    #####:  123:	  return false;
+        -:  124:      }
+        -:  125:    }
+        -:  126:  }
+        8:  127:  else if(d == UP){
+        4:  128:    if(get_y(p)+get_height(p)+distance-1 >= game_height(g))
+        1:  129:       return false;
+       10:  130:    for(int i=0; i<distance; ++i){
+       16:  131:      for(int w=0; w<get_width(p); ++w){
+        9:  132:	if(game_square_piece(g, get_x(p)+w, get_y(p)+get_height(p)+i) != -1)
+    #####:  133:	  return false;
+        -:  134:      }
+        -:  135:    }
+        -:  136:  }
+        -:  137:  else{
+        4:  138:    if(get_y(p)-distance < 0)
+        1:  139:      return false;
+       11:  140:    for(int i=0; i<distance; ++i){
+       20:  141:      for(int w=0; w<get_width(p); ++w){
+       12:  142:	if(game_square_piece(g, get_x(p)+w, get_y(p)-1-i) != -1)
+        1:  143:	  return false;
+        -:  144:      }
+        -:  145:    }
+        -:  146:  }
+        9:  147:  g->nb_moves += distance;
+        9:  148:  move_piece(p, d, distance);
+        9:  149:  return true;
+        -:  150:}
+        -:  151:
+        -:  152:
+       66:  153:int game_square_piece (game g, int x, int y){
+        -:  154:  int px, py, pw, ph;
+      359:  155:  for (int piece_num= 0; piece_num<g->nb_pieces; ++piece_num) {
+      303:  156:    cpiece p = g->pieces[piece_num];
+      303:  157:    px = get_x(p);
+      303:  158:    py = get_y(p);
+      303:  159:    pw = get_width(p);
+      303:  160:    ph = get_height(p);
+      721:  161:    for (int w=0; w<pw; ++w){
+     1004:  162:      for (int h=0; h<ph; ++h){
+      586:  163:	if ( x==px+w && y==py+h)
+       10:  164:	  return piece_num;
+        -:  165:      }
+        -:  166:    }
+        -:  167:  }
+       56:  168:  return -1;
+        -:  169:}
+        -:  170:

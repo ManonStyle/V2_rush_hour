@@ -1,0 +1,163 @@
+        -:    0:Source:piece.c
+        -:    0:Graph:piece.gcno
+        -:    0:Data:piece.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include <stdlib.h>
+        -:    4:#include "piece.h"
+        -:    5:
+        -:    6:
+        -:    7:struct piece_s {
+        -:    8:  int x;
+        -:    9:  int y;
+        -:   10:  int width;
+        -:   11:  int height;
+        -:   12:  bool move_x;
+        -:   13:  bool move_y;
+        -:   14:};
+        -:   15:
+      433:   16:piece new_piece (int x, int y, int width, int height, bool move_x, bool move_y){
+      433:   17:  piece p = (piece)malloc(sizeof(struct piece_s));
+      433:   18:  if (p == NULL){
+    #####:   19:    fprintf(stderr, "Allocation problem");
+    #####:   20:    return NULL;
+        -:   21:  }
+      433:   22:  p->x = x;
+      433:   23:  p->y = y;
+      433:   24:  p->width= width;
+      433:   25:  p->height= height;
+      433:   26:  p->move_x = move_x;
+      433:   27:  p->move_y = move_y;
+      433:   28:  return p;
+        -:   29:}
+        -:   30:
+       25:   31:piece new_piece_rh(int x, int y, bool small, bool horizontal){
+       25:   32:  piece p = (piece)malloc(sizeof(struct piece_s));
+       25:   33:  if (p == NULL){
+    #####:   34:    fprintf(stderr, "Allocation problem");
+    #####:   35:    return NULL;
+        -:   36:  }
+       25:   37:  p->x = x;
+       25:   38:  p->y = y;
+       25:   39:  if(horizontal){
+    #####:   40:    p->height = 1;
+    #####:   41:    if(small)
+    #####:   42:      p->width = 2;
+        -:   43:    else
+    #####:   44:      p->width = 3;
+        -:   45:  }
+        -:   46:  else{
+       25:   47:    p->width = 1;
+       25:   48:    if(small)
+    #####:   49:      p->height = 2;
+        -:   50:    else
+       25:   51:      p->height = 3;
+        -:   52:  }
+       25:   53:  p->move_x = horizontal;
+       25:   54:  p->move_y = !horizontal;
+       25:   55:  return p;
+        -:   56:}
+        -:   57:
+        -:   58:
+      458:   59:void delete_piece (piece p){
+      458:   60:  free(p);
+      458:   61:}
+        -:   62:
+        -:   63:
+        -:   64:
+      370:   65:void copy_piece (cpiece src, piece dst){
+      370:   66:  dst->x = src->x;
+      370:   67:  dst->y = src->y;
+      370:   68:  dst-> width=src->width;
+      370:   69:  dst->height=src->height;
+      370:   70:  dst-> move_x=src->move_x;
+      370:   71:  dst-> move_y=src->move_y;
+      370:   72:}
+        -:   73:
+        -:   74:
+      360:   75:void move_piece (piece p, dir d, int distance){
+      360:   76:    if(d == RIGHT)
+       90:   77:      p->x += distance;
+      270:   78:    else if(d == LEFT)
+       90:   79:      p->x -= distance;
+      180:   80:    else if(d == UP)
+       90:   81:      p->y += distance;
+        -:   82:    else
+       90:   83:      p->y -= distance;
+      360:   84:}
+        -:   85:
+        -:   86:
+      102:   87:bool intersect(cpiece p1, cpiece p2){
+      102:   88:  int x1 = get_x(p1);
+      102:   89:  int x2 = get_x(p2);
+      102:   90:  int y1 = get_y(p1);
+      102:   91:  int y2 = get_y(p2);
+      102:   92:  bool intersect_x = false;
+      102:   93:  bool intersect_y = false;
+      218:   94:  for(int i=0; i<get_width(p1); ++i){
+      122:   95:    if(!intersect_x)
+      217:   96:    for(int j=0; j<get_width(p2); ++j){
+      134:   97:      if(x1+i == x2+j){
+       33:   98:	intersect_x = true;
+       33:   99:	break;
+        -:  100:      }
+        -:  101:    }
+        -:  102:    else
+        6:  103:      break;
+        -:  104:  }
+      102:  105:  if(!intersect_x)
+       69:  106:    return false;
+       77:  107:  for(int i=0; i<get_height(p1); ++i){
+       49:  108:    if(!intersect_y)
+       92:  109:    for(int j=0; j<get_height(p2); ++j){
+       59:  110:      if(y1+i == y2+j){
+       11:  111:	intersect_y = true;
+       11:  112:	break;
+        -:  113:      }
+        -:  114:    }
+        -:  115:    else
+        5:  116:      break;
+        -:  117:  }
+       33:  118:  return intersect_x && intersect_y;
+        -:  119:}
+        -:  120:
+        -:  121:
+     1009:  122:int get_x(cpiece p){
+     1009:  123:  return p->x;
+        -:  124:}
+        -:  125:
+        -:  126:
+     1009:  127:int get_y(cpiece p){
+     1009:  128:  return p->y;
+        -:  129:}
+        -:  130:
+        -:  131:
+      614:  132:int get_height(cpiece p){
+      614:  133:  return p->height;
+        -:  134:}
+        -:  135:
+        -:  136:
+      880:  137:int get_width(cpiece p){
+      880:  138:  return p->width;
+        -:  139:}
+        -:  140:
+        -:  141:
+    #####:  142:bool is_horizontal(cpiece p){
+    #####:  143:  return p->move_x;
+        -:  144:}
+        -:  145:
+        -:  146:
+      625:  147:bool can_move_x(cpiece p){
+      625:  148:  return p->move_x;
+        -:  149:}
+        -:  150:
+      625:  151:bool can_move_y(cpiece p){
+      625:  152:  return p->move_y;
+        -:  153:}
+        -:  154:
+        -:  155:
+        -:  156:
+        -:  157:
+        -:  158:
