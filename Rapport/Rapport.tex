@@ -1,3 +1,22 @@
+%GG
+%Que Fait le projet
+%Organisation du travail
+%Découpage de l'archive (cmake)
+%couverture de code
+
+%Alienor
+%main.c
+%solveur
+%valgrind
+
+%Manon
+%%Game.c
+
+%ENSEMBLE
+%Ce qui fonctionne/ ne fonctionne pas
+%Difficultés rencontrées
+
+
 %classe du document
 \documentclass{report}
 
@@ -43,9 +62,31 @@ numbersep = 7pt,
 %P1C2
 \chapter{Description des fonctions implémentées}
 \section{Fichier piece.c}
+Le fichier piece.c permet de créer une pièce de jeu pouvant etre utilisée pour les jeux de Rush Hour et Âne Rouge. Il est possible de réutiliser ce fichier source pour implémenter des pièces pour des jeux dont le fonctionnement est similaire.
+\subsection{Structure pièce}
+Une piece est modélisée par une structure C possédant six données membres :
+\begin{itemize}
+\item \emph{x} :  coordonnées en abscisse du coin en bas à gauche de la pièce.
+\item \emph{y} : coordonnées en ordonnée du coin en bas à gauche de la pièce.
+\item \emph{width} : largeur de la pièce.
+\item \emph{height} : hauteur de la pièce.
+\item \emph{move\_x} : indique si la pièce est autorisée à bouger horizontalement.
+\item \emph{move\_y} : indique si la pièce est autorisée à bouger verticalement.
+\end{itemize}
+\subsection{new\_piece}
+La fonction \emph{new\_piece} permet de créer une pièce en choisissant sa position sur le plateau de jeu, sa taille ainsi que ses capacités de mouvement. Elle consiste à allouer de la mémoire pour la structure \emph{piece} et à initialiser chaque donnée membre de la structure par l'argument correspondant passé en paramètre. Le principe de cette fonction est utilisé pour implémenter la fonction \emph{new\_piece\_rh} permettant uniquement de créer une pièce de jeu pour Rush Hour.
+\subsection{delete\_piece}
+La fonction \emph{delete\_piece} permet de supprimer une pièce. Elle consiste à libérer la mémoire allouée à la pièce passée en paramètre en effectuant un free.
+\subsection{copy\_piece}
+La fonction \emph{copy\_piece} permet de copier la pièce passée en premier paramètre dans la pièce passée en second paramètre. On considère que la pièce copié a déjà initialisée avant l'appel à la fonction \emph{copy\_piece}. Elle consiste donc à uniquement copier les données membres de la pièce originale dans les données membres de la pièce copiée. 
+\subsection{move\_piece}
+La fonction \emph{move\_piece} permet de bouger la pièce p passée en premier paramètre, dans la direction dir passée en second paramètre, d'une distance dist passée en troisième paramètre. Si dir vaut RIGHT, alors l'abscisse x de p est incrémentée de dist. Si dir vaut LEFT, alors l'abscisse x de p est décrémenté de dist. Si dir vaut UP, alors l'ordonnée y de p est incrémenté. Si dir vaut DOWN, alors l'ordonnée y de p est décrémenté de dist. Cette fonction se contente uniquement de bouger la pièce, sans prendre en compte les mouvements invalides (mouvement en dehors du plateau, intersection de pièces, direction valable). C'est à l'implémentation du fichier source game.c de s'en charger.
+\subsection{intersect}
+\subsection{can\_move\_x / can\_move\_y}
+%parler de is_horizontal
+\subsection{Getteurs / setteurs}
 \section{Fichier game.c}
 \section{Fichier main.c}
-
 %P1C3
 \chapter{Description des tests mis en place}
 
@@ -121,6 +162,8 @@ Cette fonction permet de tester si la fonction \emph{test\_game\_over\_hr}, qui 
 
 %P2C3
 \chapter{Analyse mémoire}
+\section{Valgrind}
+\section{Couverture du code} 
 
 %P2C4
 \chapter{Ce qui fonctionne et ne fonctionne pas. Pourquoi ?}
