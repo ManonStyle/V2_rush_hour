@@ -9,9 +9,6 @@
 %solveur
 %valgrind
 
-%Manon
-%%Game.c
-
 %ENSEMBLE
 %Ce qui fonctionne/ ne fonctionne pas
 %Difficultés rencontrées
@@ -62,31 +59,63 @@ numbersep = 7pt,
 %P1C2
 \chapter{Description des fonctions implémentées}
 \section{Fichier piece.c}
-Le fichier piece.c permet de créer une pièce de jeu pouvant etre utilisée pour les jeux de Rush Hour et Âne Rouge. Il est possible de réutiliser ce fichier source pour implémenter des pièces pour des jeux dont le fonctionnement est similaire.
+Le fichier piece.c implémente les fonctions nécéssaires à la création d'une pièce de jeu pouvant être utilisée pour les jeux de Rush Hour et d'Âne Rouge. Il est possible de réutiliser ce fichier source pour implémenter les pièces de jeux dont le fonctionnement est similaire.
 \subsection{Structure pièce}
 Une piece est modélisée par une structure C possédant six données membres :
 \begin{itemize}
-\item \emph{x} :  coordonnées en abscisse du coin en bas à gauche de la pièce.
-\item \emph{y} : coordonnées en ordonnée du coin en bas à gauche de la pièce.
+\item \emph{x} : abscisse du coin en bas à gauche de la pièce.
+\item \emph{y} : ordonnée du coin en bas à gauche de la pièce.
 \item \emph{width} : largeur de la pièce.
 \item \emph{height} : hauteur de la pièce.
 \item \emph{move\_x} : indique si la pièce est autorisée à bouger horizontalement.
 \item \emph{move\_y} : indique si la pièce est autorisée à bouger verticalement.
 \end{itemize}
 \subsection{new\_piece}
-La fonction \emph{new\_piece} permet de créer une pièce en choisissant sa position sur le plateau de jeu, sa taille ainsi que ses capacités de mouvement. Elle consiste à allouer de la mémoire pour la structure \emph{piece} et à initialiser chaque donnée membre de la structure par l'argument correspondant passé en paramètre. Le principe de cette fonction est utilisé pour implémenter la fonction \emph{new\_piece\_rh} permettant uniquement de créer une pièce de jeu pour Rush Hour.
+La fonction \emph{new\_piece} crée une pièce en choisissant sa position sur le plateau de jeu, sa taille ainsi que ses capacités de mouvement. Elle consiste à allouer de la mémoire pour la structure \emph{piece} et à initialiser chaque donnée membre de la structure par l'argument correspondant passé en paramètre. Elle retourne la pièce en question. Le principe de cette fonction est utilisé pour implémenter la fonction \emph{new\_piece\_rh} permettant uniquement de créer une pièce de jeu pour Rush Hour.
 \subsection{delete\_piece}
-La fonction \emph{delete\_piece} permet de supprimer une pièce. Elle consiste à libérer la mémoire allouée à la pièce passée en paramètre en effectuant un free.
+\label{del}
+La fonction \emph{delete\_piece} supprime une pièce. Elle consiste à libérer la mémoire allouée à la pièce passée en paramètre en effectuant un \emph{free}. Elle ne retourne rien.
 \subsection{copy\_piece}
-La fonction \emph{copy\_piece} permet de copier la pièce passée en premier paramètre dans la pièce passée en second paramètre. On considère que la pièce copié a déjà initialisée avant l'appel à la fonction \emph{copy\_piece}. Elle consiste donc à uniquement copier les données membres de la pièce originale dans les données membres de la pièce copiée. 
+\label{copy}
+La fonction \emph{copy\_piece} copie la pièce passée en premier paramètre dans la pièce passée en second paramètre. On considère que la pièce copiée a déjà été initialisée avant l'appel à la fonction \emph{copy\_piece}. Elle consiste donc à uniquement copier les données membres de la pièce originale dans les données membres de la pièce copiée. Elle ne retourne rien.
 \subsection{move\_piece}
-La fonction \emph{move\_piece} permet de bouger la pièce \emph{p} passée en premier paramètre, dans la direction \emph{dir} passée en second paramètre, d'une distance \emph{dist} passée en troisième paramètre. Si \emph{dir} vaut \emph{RIGHT}, alors l'abscisse \emph{x} de \emph{p} est incrémentée de \emph{dist}. Si \emph{dir} vaut \emph{LEFT}, alors l'abscisse \emph{x} de \emph{p} est décrémenté de \emph{dist}. Si \emph{dir} vaut \emph{UP}, alors l'ordonnée \emph{y} de \emph{p} est incrémenté. Si \emph{dir} vaut \emph{DOWN}, alors l'ordonnée \emph{y} de \emph{p} est décrémenté de \emph{dist}. Cette fonction se contente uniquement de bouger la pièce, sans prendre en compte les mouvements invalides (mouvement en dehors du plateau, intersection de pièces, direction invalide). C'est l'implémentation du fichier source game.c qui s'en charger.
+La fonction \emph{move\_piece} bouge la pièce \emph{p} passée en premier paramètre, dans la direction \emph{dir} passée en second paramètre, d'une distance \emph{dist} passée en troisième paramètre. Si \emph{dir} vaut \emph{RIGHT}, alors l'abscisse \emph{x} de \emph{p} est incrémentée de \emph{dist}. Si \emph{dir} vaut \emph{LEFT}, alors l'abscisse \emph{x} de \emph{p} est décrémentée de \emph{dist}. Si \emph{dir} vaut \emph{UP}, alors l'ordonnée \emph{y} de \emph{p} est incrémentée de \emph{dist}. Si \emph{dir} vaut \emph{DOWN}, alors l'ordonnée \emph{y} de \emph{p} est décrémentée de \emph{dist}. Cette fonction ne retourne rien. Elle se contente uniquement de bouger la pièce, sans prendre en compte les mouvements invalides (mouvement en dehors du plateau, intersection de pièces, direction invalide). C'est l'implémentation de la fonction \emph{play\_move} du fichier source game.c qui s'en charge (cf. sous-section \ref{move}).
 \subsection{intersect}
-La fonction \emph{intersect} permet de savoir si les deux pièces passées en paramètres s'intersectent. Elle consiste à comparer les coordonnées de chaque cellule de la première pièce avec les coordonnées de chaque cellule de la seconde pièce. Elle retourne un bouléen, qui vaut \emph{true} si les deux pièces ont au moins une cellule en commun, et \emph{false} dans le cas contraire.
+La fonction \emph{intersect} teste si les deux pièces passées en paramètre s'intersectent. Elle consiste à comparer les coordonnées de chaque cellule de la première pièce avec les coordonnées de chaque cellule de la seconde pièce. Elle retourne un bouléen, qui vaut \emph{true} si les deux pièces ont au moins une cellule en commun, et \emph{false} dans le cas contraire.
 \subsection{Getteurs}
 Les fonctions \emph{get\_x}, \emph{get\_y}, \emph{get\_height}, \emph{get\_width}, \emph{can\_move\_x} et \emph{can\_move\_y} sont des getteurs qui retournent respectivement l'abscisse \emph{x}, l'ordonnée \emph{y}, la hauteur \emph{height}, la largeur \emph{width}, le booléen \emph{move\_x} indiquant la capacité de mouvement horizontal et le booléen \emph{move\_y} indiquant la capacité de mouvement verticale de la pièce. Il existe également une fonction \emph{is\_horizontal} dont l'implémentation est similaire à celle de la fonction \emph{can\_move\_x}.
 \section{Fichier game.c}
+Le fichier game.c implémente les fonctions nécéssaires à la création d'un plateau de jeu, et à la gestion d'un jeu de Rush Hour et d'Ane Rouge. Il est possible de réutiliser ce fichier source pour implémenter des jeux dont le fonctionnement est similaire.
+\subsection{Structure game}
+Un jeu est modélisé par une structure C possédant cinq données membres :
+\begin{itemize}
+\item \emph{width} : largeur du plateau de jeu.
+\item \emph{height} : hauteur du plateau de jeu.
+\item \emph{nb\_pieces} : nombre de pièces sur le plateau de jeu.
+\item \emph{nb\_moves} : nombre mouvement depuis le début du jeu.
+\item \emph{pieces} : tableau de pièces.
+\end{itemize}
+\subsection{new\_game}
+La fonction \emph{new\_game} crée un jeu en choisissant ses dimensions ainsi que la configuration initiale de celui-ci par l'intermédiaire d'un set de pièces. Elle consiste à allouer de la mémoire pour la structure \emph{game} et à initialiser chaque donnée membre de la structure par l'argument correspondant passé en paramètre. L'initialisation du tableau de pièces de la structure est assez particulière. Il faut d'abord allouer l'espace mémoire pour le tableau de pièces de la structure, puis copier chaque pièce du tableau fourni en paramètre dans le tableau \emph{pieces} de la structure par l'intermédiaire de la fonction \emph{copy\_piece} expliquée à la sous-section \ref{copy}. Cette fonction retourne le jeu en question. Le principe de cette fonction est utilisé pour implémenter la fonction \emph{new\_game\_hr} permettant uniquement de créer un jeu de Rush Hour.
+\subsection{delete\_game}
+La fonction \emph{delete\_game} supprime un jeu. Elle consiste à libérer la mémoire allouée au jeu passé en paramètre en supprimant dans un premier temps toutes les pièces du tableau de pièces par l'intermédiaire de la fonction \emph{delete\_piece} expliquée à la sous-section \ref{del}, puis en effectuant un \emph{free} sur le tableau et un \emph{free} sur le jeu en question. Elle ne retourne rien.
+\subsection{copy\_game}
+La fonction \emph{copy\_piece} copie le jeu passé en premier paramètre dans le jeu passé en second paramètre. On considère que le jeu copié a déjà été initialisé avant l'appel à la fonction \emph{copy\_game}. Elle consiste donc à uniquement copier les données membres du jeu original dans les données membres du jeu copié. La copie du tableau de pièces s'effectue au moyen d'une boucle \emph{for} parcourant le tableau et de la fonction \emph{copy\_piece} expliquée à la sous-section \ref{copy}. Elle ne retourne rien.
+\subsection{game\_piece}
+La fonction \emph{game\_piece} retourne la pièce portant l'indice passé en paramètre, du jeu également passé en paramètre. Elle consiste à renvoyer le contenu du tableau \emph{pieces} à l'indice donné. Si cet indice est supérieur ou égal au nombre de pièces, alors la fonction retourne \emph{NULL}.
+\subsection{game\_square\_piece}
+La fonction \emph{game\_square\_piece} retourne le numéro de la pièce située aux coordonnées \emph{x} et \emph{y} passées en paramètre, du jeu également passé en paramètre. Elle consiste à parcourir toutes les cellules constitutives des pièces du jeu en comparant leurs coordonnées à celles données en paramètre. S'il y a égalité, alors le numéro de la pièce en question est renvoyé, sinon la valeur -1 est renvoyée.
+\subsection{game\_over\_hr}
+La fonction \emph{game\_over\_hr} teste si le jeu passé en paramètre est terminé, c'est-à-dire si la pièce 0 à atteint la sortie. Elle consiste à comparer les coordonnées de la pièce 0 avec les coordonnées de la sortie. Elle renvoit un booléen. La fonction \emph{game\_over} de l'Âne Rouge est implémentée dans le fichier source main.c expliquée à la section \ref{main}.
+\subsection{play\_move}
+\label{move}
+La fonction \emph{play\_move} tente de bouger dans le jeu passé en premier paramètre, la pièce dont l'indice est passé en deuxième paramètre, dans une direction passée en troisième paramètre et d'une distance passée en quatrième paramètre. Si le mouvement est valide la pièce est bougée et la fonction retourne \emph{true}. S'il n'est pas valide (la pièce sort du plateau, la direction est incompatible avec le type de pièce, la pièce croise une autre pièce), la pièce n'est pas bougée et la fonction retourne \emph{false}.
+\subsection{game\_nb\_moves}
+La fonction \emph{get\_nb\_moves} retourne le nombre de mouvements depuis le début de la partie. Sa valeur est incrémentée à chaque coup joué.
+\subsection{Getteurs}
+Les fonctions \emph{game\_nb\_pieces}, \emph{game\_width} et \emph{game\_height} sont des getteurs qui retournent respectivement le nombre de pièces du jeu, la largeur et la hauteur du plateau de jeu.
 \section{Fichier main.c}
+\label{main}
 %P1C3
 \chapter{Description des tests mis en place}
 
@@ -120,7 +149,7 @@ int main (int argc, char *argv[])
 Cette fonction principale possède une variale booléenne \emph{résult} initialisée à \emph{true} susceptible de changer de valeur au cours du déroulement des tests unitaires. Le code des lignes 5 à 9 est un exemple de évaluation paresseuse. Si \emph{result} vaut \emph{true}, alors le test unitaire de l'expression booléenne est exécuté et \emph{result} prend la valeur de sa valeur booléenne de retour. Si \emph{result} vaut \emph{false}, alors le test unitaire de l'expression booléenne n'a pas besoin d'être exécuté, puisque l'on sait déjà que le résultat de l'expression booléenne sera \emph{false}, et \emph{result} prend la valeur \emph{false}. Ainsi, le premier test est toujours exécuté, et si l'un des tests unitaires vaut \emph{false}, alors, plus aucun test unitaire ne sera exécuté par la suite puisque par évaluation paresseuse \emph{result} prendra toujours la valeur \emph{false} sans arriver à l'appel du test unitaire. Lorsque tous les tests sont passés, si \emph{result} vaut \emph{true} alors cela signifie que tous les tests se sont bien passés (affichage d'un message ``Youpi !''), sinon cela signifie que l'un des tests a échoué (affichage d'un message d'erreur personnalisé).
 
 \section{Fichier test\_piece.c}
-L'intégralité des fonctions du fichier source piece.c sont testées à l'intérieur des tests unitaires \emph{test\_new\_piece\_rh}, \emph{test\_new\_piece}, \emph{test\_copy\_piece}, \emph{test\_intersect} et \emph{test\_move\_piece} du fichier source test\_piece.c. Toutes ces fonctions reposent sur les mêmes principe que ceux vus aux section \ref{Lexa} et \ref{Clarke} (évaluation paresseuse et utilisation de la variable booléenne \emph{result}).
+L'intégralité des fonctions du fichier source piece.c sont testées à l'intérieur des tests unitaires \emph{test\_new\_piece\_rh}, \emph{test\_new\_piece}, \emph{test\_copy\_piece}, \emph{test\_intersect} et \emph{test\_move\_piece} du fichier source test\_piece.c. Toutes ces fonctions reposent sur les mêmes principe que ceux vus aux sous-sections \ref{Lexa} et \ref{Clarke} (évaluation paresseuse et utilisation de la variable booléenne \emph{result}).
 \subsection{test\_new\_piece\_rh}
 Cette fonction permet de tester le bon déroulement de la création d'une pièce de Rush Hour, quelque soit sa taille (\emph{small}, \emph{!small}) et son orientation (\emph{horizontal}, \emph{!horizontal}), et pour des coordonnées \emph{x} et \emph{y} variées. Il s'agit de vérifier que la nouvelle pièce crée possède bien les caractéristiques voulues (coordonnées, taille, orientation). Si les caractéristiques ne sont pas égales à celles voulues, alors la fonction \emph{new\_piece\_rh} est considérée comme incorrecte. La fonction \emph{new\_piece\_rh} est testée par l'intermédiaire des fonctions  \emph{get\_x}, \emph{get\_y}, \emph{get\_height}, \emph{get\_width}, \emph{can\_move\_x} et \emph{can\_move\_y}. Toute mémoire allouée a été libérée grâce à la fonction \emph{delete\_piece} pour éviter des fuites mémoires.
 \subsection{test\_new\_piece}
