@@ -18,7 +18,7 @@ execution du solveur :
 
 execution des tests :
 	cd build
-	make check
+	make check  ou  make test
 
 desinstallation :
 	make clean
