@@ -127,7 +127,7 @@ bool test_copy_game() {
   set_up_Bis();
   game g = new_game(WIDTH, HEIGHT, NB_PIECES, piecesBis);
   set_up_rh();
-  game gC = new_game(1, 1, NB_PIECES, pieces);
+  game gC = new_game(6, 5, NB_PIECES, pieces);
   copy_game(g, gC);
   result = result && test_equality_int(game_width(g), game_width(gC), "copy_game game_width");
   result = result && test_equality_int(game_height(g), game_height(gC), "copy_game game_height");
