@@ -10,17 +10,35 @@ struct game_s{
   int nb_pieces;
   int nb_moves;
   piece *pieces;
+  int* grid;
 };
 
+void init_grid(game g){
+  for(int y=0; y<g->height; ++y){
+    for(int x=0; x<g->width; ++x)
+      g->grid[y*g->width+x] = -1;
+  }
+  for(int i=0; i<g->nb_pieces; ++i){
+    piece p = g->pieces[i];
+    for(int y=0; y<get_height(p); ++y){
+      for(int x=0; x<get_width(p); ++x)
+	g->grid[(get_y(p)+y)*g->width+get_x(p)+x] = i;
+    }
+  }
+}
 
 game new_game (int width, int height, int nb_pieces, piece *pieces){
   game g = (game)malloc(sizeof(struct game_s));
+  if (g == NULL){
+    fprintf(stderr, "Allocation problem");
+    return NULL;
+  }
   g->width = width;
   g->height = height;
   g->nb_pieces = nb_pieces;
   g->nb_moves = 0;
   g->pieces = (piece*)malloc((nb_pieces)*sizeof(piece));
-  if (g == NULL){
+  if (g->pieces == NULL){
     fprintf(stderr, "Allocation problem");
     return NULL;
   }
@@ -28,6 +46,12 @@ game new_game (int width, int height, int nb_pieces, piece *pieces){
     g->pieces[i] = new_piece_rh(0, 0, true, true);
     copy_piece(pieces[i], g->pieces[i]);
   }
+  g->grid = (int*)malloc(sizeof(int)*g->width*g->height);
+  if (g->grid == NULL){
+    fprintf(stderr, "Allocation problem");
+    return NULL;
+  }
+  init_grid(g);
   return g;
 }
 
@@ -43,6 +67,7 @@ void delete_game (game g){
   for(int i=0; i<g->nb_pieces; ++i)
     delete_piece(g->pieces[i]);
   free(g->pieces);
+  free(g->grid);
   free(g);
 }
 
@@ -57,6 +82,7 @@ void copy_game (cgame src, game dst){
       dst->pieces[i] = new_piece_rh(0, 0, true, true);
     copy_piece(src->pieces[i], dst->pieces[i]);
   }
+  init_grid(dst);
 }
 
 
@@ -146,25 +172,12 @@ bool play_move(game g, int piece_num, dir d, int distance){
   }
   g->nb_moves += distance;
   move_piece(p, d, distance);
+  init_grid(g);
   return true;
 }
 
 
 int game_square_piece (game g, int x, int y){
-  int px, py, pw, ph;
-  for (int piece_num= 0; piece_num<g->nb_pieces; ++piece_num) {
-    cpiece p = g->pieces[piece_num];
-    px = get_x(p);
-    py = get_y(p);
-    pw = get_width(p);
-    ph = get_height(p);
-    for (int w=0; w<pw; ++w){
-      for (int h=0; h<ph; ++h){
-	if ( x==px+w && y==py+h)
-	  return piece_num;
-      }
-    }
-  }
-  return -1;
+  return g->grid[y*g->width+x];
 }
 
